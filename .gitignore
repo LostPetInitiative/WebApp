@@ -8,6 +8,8 @@
 !.yarn/sdks
 !.yarn/versions
 
+dist
+
 # dependencies
 /node_modules
 /.pnp
