@@ -27,6 +27,7 @@ const development = window.location.hostname === "localhost"
 var cardStorageURL: string
 var solrGatewayURL: string
 if (development) {
+  console.log("Running in development mode")
   // cardStorageURL = "http://10.0.4.174:3000"
   // solrGatewayURL = "http://10.0.4.174:3001"
   cardStorageURL = "https://kashtanka.pet/api/storage"

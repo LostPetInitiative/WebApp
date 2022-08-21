@@ -42,6 +42,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Output Management',
+      template: 'public/index.html',
+      //publicPath: 'public',
     }),
   ],
   output: {
