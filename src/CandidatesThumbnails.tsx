@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useState} from "react";
 import "./AnimalCard.scss"
 import * as ICardStorage from "./apiClients/ICardStorage"
 import * as DataModel from "./DataModel";
@@ -6,7 +7,13 @@ import * as Comp from "./computations"
 import * as Utils from "./Utils"
 import * as ISearch from "./apiClients/ISearch"
 import "./CandidatesThumbnails.scss"
+import * as im from "immutable"
 
+/**
+ * Renders the thumbnail for the card specified in card prop
+ * @param props 
+ * @returns 
+ */
 export function AnimalCardThumbnail(props: {
     card: DataModel.AnimalCard,
     isAccent: boolean,
@@ -53,6 +60,7 @@ export function AnimalCardThumbnail(props: {
     );
 }
 
+
 type AnimalCardThumbnailByIdProps = {
     cardStorage: ICardStorage.ICardStorage,
     refCard: DataModel.AnimalCard | null,
@@ -66,6 +74,9 @@ type AnimalCardThumbnailByIdState = {
     loadedCard: DataModel.AnimalCard | "Loading" | "Unexistent" | "NotSet"
 }
 
+/**
+ * Loads the card identified by `namespace` and `localID` prop asynchronously. Then displays it with `AnimalCardThumbnail`
+ */
 export class AnimalCardThumbnailById
     extends React.Component<AnimalCardThumbnailByIdProps, AnimalCardThumbnailByIdState> {
     constructor(props: AnimalCardThumbnailByIdProps) {
@@ -114,7 +125,7 @@ export class AnimalCardThumbnailById
 
 type CandidatesThumbnailsStateType = {
     shownReferenceCardId: string,
-    loadedRelevantCards: ISearch.SimilarSearchResult | null,
+    loadedRelevantCards: ISearch.SimilarCardSearchResult | null,
     currentSelectionIdx: number
 }
 
@@ -142,137 +153,245 @@ function marshalEventType(t: DataModel.CardType): ISearch.EventType {
     return capitalize(t as string) as ISearch.EventType;
 }
 
-export class CandidatesThumbnails
-    extends React.Component<CandidatesThumbnailsPropsType, CandidatesThumbnailsStateType> {
-    constructor(props: CandidatesThumbnailsPropsType) {
-        super(props)
+enum SimilarSearchModeEnum {Off, CardFeatures, ImageFeatures}
+type SimilarSearchMode =
+    { type: SimilarSearchModeEnum.Off} |
+    { type: SimilarSearchModeEnum.CardFeatures, featuresIdent: string } |
+    { type: SimilarSearchModeEnum.ImageFeatures, featuresIdent: string }
 
-        this.state = {
-            shownReferenceCardId: "",
-            currentSelectionIdx: 0,
-            loadedRelevantCards: null
-        }
+function determineSearchMode(card?: DataModel.AnimalCard) : SimilarSearchMode {
+    if(card == null)       
+        return { type: SimilarSearchModeEnum.Off };
+    return { type: SimilarSearchModeEnum.ImageFeatures, featuresIdent: "CalZhiruiHeadTwinTransformer" };
+    if(card.features != null && Object.keys(card.features).length>0) {        
+        const featuresIdent = Object.keys(card.features)[0]
+        return { type: SimilarSearchModeEnum.CardFeatures, featuresIdent: featuresIdent}
     }
+    const imageFeaturesKeys = card.photos.map(p => Object.keys(p.featureVectors)).filter(keys => keys != null);
+    if(imageFeaturesKeys.length>0)
+        return { type: SimilarSearchModeEnum.ImageFeatures, featuresIdent: imageFeaturesKeys[0][0] }
+    return { type: SimilarSearchModeEnum.Off };        
+}
 
-    checkLoadedData() {
-        // checking the state of loaded card and the current needed card IDs
-        const requestedFullID = (this.props.referenceCard == null) ? "" : (this.props.referenceCard.namespace + "/" + this.props.referenceCard.id);
+enum SearchStateEnum {None, SearchingViaCardFeatures, SearchingViaImageFeatures}
+type SearchState =
+    {type: SearchStateEnum.None} |
+    {type: SearchStateEnum.SearchingViaCardFeatures, found: ISearch.SimilarCardSearchResult | "InProgress" } |
+    {type: SearchStateEnum.SearchingViaImageFeatures, found: im.Map<number,ISearch.FoundSimilarImage[]>, imagesToSearchCount: number }
 
-        if (this.state.shownReferenceCardId !== requestedFullID) {
-            // we need to initiate the background (re)load of candidates
+function extractRelevantCards(state: SearchState): ISearch.FoundCard[] {
+    switch(state.type) {
+        case SearchStateEnum.None:
+            return [];
+        case SearchStateEnum.SearchingViaCardFeatures:
+            if(state.found === "InProgress")
+                return [];
+            if(!ISearch.IsSimilarCardResultSuccessful(state.found))
+                return [];
+            return state.found;
+        case SearchStateEnum.SearchingViaImageFeatures:
+            const result: ISearch.FoundCard[] = [];
+            const fullIds = new Set<string>();
+            for(const [num,images] of state.found) {
+                for(const im of images) {
+                    const fullID = `${im.namespace}/${im.id}`
+                    if(!fullIds.has(fullID)) { // we are collecting only distinct cards (in case there are several images in the same card)
+                        fullIds.add(fullID);
+                        result.push(im);
+                    }
+                }                
+            }
+            return result;
+        default:
+            const n:never = state;
+            throw "exhaustive checks failed"
+    }
+}
 
-            // resetting previously downloaded data
-            this.setState({
-                shownReferenceCardId: requestedFullID,
-                loadedRelevantCards: null,
-                currentSelectionIdx: 0
-            })
+function getSearchCompletnessFraction(state:SearchState): number {
+    switch(state.type) {
+        case SearchStateEnum.None:
+            return 1.0;
+        case SearchStateEnum.SearchingViaCardFeatures:
+            if(state.found === "InProgress")
+                return 0.0;
+            return 1.0;        
+        case SearchStateEnum.SearchingViaImageFeatures:
+           return state.found.count() / state.imagesToSearchCount;
+        default:
+            const n:never = state;
+            throw "exhaustive checks failed"
+    }
+}
 
-            if (this.props.referenceCard !== null) {
-                // initiating background load
-                console.log("Initiating download of relevant cards for " + requestedFullID)
+export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
+    const [currentSelectionIdx, setCurrentSelectionIdx] = useState<number>(0);
+    const [searchState, setSearchState] = useState<SearchState>({type: SearchStateEnum.None});
 
-                const card = this.props.referenceCard
-                const featuresIdent = Object.keys(card.features)[0]
-                this.props.searcher.GetRelevantCards(card.location.lat, card.location.lon,
-                    marshalAnimal(card.animal),
-                    marshalEventType(card.cardType),
-                    card.eventTime,
-                    featuresIdent,
-                    card.features[featuresIdent]).then(relevantSearchRes => {
-                        if (ISearch.IsSimilarResultSuccessful(relevantSearchRes)) {
-                            console.log("Got relevant cards for " + requestedFullID)
-                            const relevantCards = relevantSearchRes as ISearch.FoundSimilarCard[]
-                            this.setState({ loadedRelevantCards: relevantCards })
+    const isSearchInProgress = (searchState.type == SearchStateEnum.SearchingViaCardFeatures && searchState.found === "InProgress") ||
+        (searchState.type == SearchStateEnum.SearchingViaImageFeatures && searchState.found.count() < searchState.imagesToSearchCount)
+    const searchPercentage = getSearchCompletnessFraction(searchState) * 100.0;
+        
+    const requestedFullID = (props.referenceCard == null) ? "" : (props.referenceCard.namespace + "/" + props.referenceCard.id);
 
-                            // trying to set proper selected relevant card by looking for the desired card
-                            if (this.props.selectedCardFullID !== null) {
-                                const foundIdx = relevantCards.findIndex(v => v.namespace + "/" + v.id === this.props.selectedCardFullID)
-                                if (foundIdx !== -1) {
-                                    //const doNotifyNewSelection = foundIdx !== this.state.currentSelectionIdx
-                                    this.setState({currentSelectionIdx : foundIdx})
-                                } else {
-                                    this.setState({currentSelectionIdx : NaN})
-                                }
-                            }
-                        } else {
-                            console.error("Failed to get relevant cards: " + relevantSearchRes.ErrorMessage)
-                        }
+    const searchMode:SimilarSearchMode = determineSearchMode(props.referenceCard);
+
+    const relevantCards = extractRelevantCards(searchState);
+
+    React.useEffect(() => {
+        // trying to set proper selected relevant card by looking for the desired card
+        if (props.selectedCardFullID !== null) {
+            const foundIdx = relevantCards.findIndex(v => v.namespace + "/" + v.id === props.selectedCardFullID)
+            if (foundIdx !== -1) {
+                //const doNotifyNewSelection = foundIdx !== this.state.currentSelectionIdx
+                setCurrentSelectionIdx(foundIdx)
+            } else {
+                setCurrentSelectionIdx(NaN)
+            }
+        }
+    },[props.selectedCardFullID, relevantCards]);
+
+    const backgroundFetchId = React.useRef<number>(0)
+
+    React.useEffect(() => {
+        // background similar cards fetch
+        backgroundFetchId.current += 1;
+
+        const snapshotedBackgroundFetchId = backgroundFetchId.current; // to be checked in promise continutations
+
+        setCurrentSelectionIdx(0);
+        const card = props.referenceCard;
+
+        switch(searchMode.type) {
+            case SimilarSearchModeEnum.CardFeatures:                
+                const featuresIdent = searchMode.featuresIdent;                 
+                console.log(`initiating search of relevant cards by card features \"${searchMode.featuresIdent}\" for ${requestedFullID}`);
+                setSearchState({
+                    type: SearchStateEnum.SearchingViaCardFeatures,
+                    found: "InProgress"
+                });
+                props.searcher.GetRelevantCardsByCardFeatures(card.location.lat, card.location.lon,
+                marshalAnimal(card.animal),
+                marshalEventType(card.cardType),
+                card.eventTime,
+                featuresIdent,
+                card.features[featuresIdent]).then(relevantSearchRes => {
+                    if(snapshotedBackgroundFetchId !== backgroundFetchId.current) {
+                        console.warn(`Discarding stale search by card features num ${snapshotedBackgroundFetchId}`);
+                        return;
+                    }                    
+                    setSearchState({
+                        type: SearchStateEnum.SearchingViaCardFeatures,
+                        found: relevantSearchRes
                     });
-            }
+                }, error => console.error(`Search promise rejected: ${error}`));
+                break;
+            case SimilarSearchModeEnum.ImageFeatures:
+                // for each image issue a request                                
+                setSearchState({
+                    type: SearchStateEnum.SearchingViaImageFeatures,
+                    imagesToSearchCount: props.referenceCard.photos.length,
+                    found: im.Map<number,ISearch.FoundSimilarImage[]>()
+                });
+
+                props.referenceCard.photos.forEach((image,imNum) => {
+                    console.log(`Searching image similarities \"${searchMode.featuresIdent}\" for ${card.namespace}/${card.id}/${imNum}`)
+                    props.searcher.GetRelevantImagesByImageFeatures(card.location.lat, card.location.lon,
+                        marshalAnimal(card.animal),
+                        marshalEventType(card.cardType),
+                        card.eventTime,
+                        searchMode.featuresIdent,
+                        image.featureVectors[searchMode.featuresIdent]).then(res => {
+                            console.log("image search continuation",res)
+                            if(snapshotedBackgroundFetchId !== backgroundFetchId.current) {
+                                console.warn(`Discarding stale search by image features num ${snapshotedBackgroundFetchId}`);
+                                return;
+                            }
+                            if(ISearch.IsSimilarImageResultSuccessful(res))
+                                console.log(`Got ${res.length} similar images for ${card.namespace}/${card.id}/${imNum}`)
+                            else
+                                console.error(`Got failure for similar images for ${card.namespace}/${card.id}/${imNum}: ${res.ErrorMessage}`)
+                            setSearchState(oldState => {
+                                    if(oldState.type === SearchStateEnum.SearchingViaImageFeatures && ISearch.IsSimilarImageResultSuccessful(res)) {
+                                        return {
+                                            ...oldState,
+                                            found: oldState.found.set(imNum,res)
+                                        }
+                                    } else
+                                        return oldState
+                                });
+                            }
+                        ,error => {
+                            console.error(`Search promise rejected: ${error}`)
+                        })
+                });
+
+                // upon competion form the relevane cards
+                break;
+            case SimilarSearchModeEnum.Off:
+                break;
+            default:
+                const n:never = searchMode; // compile time exhaustive check
+                throw "Unsupported similar card search type";
         }
-    }
+    },[requestedFullID, searchMode.type, props.searcher])
 
-    componentDidMount() {
-        this.checkLoadedData()
-    }
-
-    componentDidUpdate() {
-        this.checkLoadedData()
-    }
-
-    handleThumbnailSelection(fullID: string, e: (React.MouseEvent | null)) {
-        if (this.props.selectionChanged !== null) {
-            this.props.selectionChanged(fullID)
+    const handleThumbnailSelection = React.useCallback((fullID: string, e: (React.MouseEvent | null)) => {
+        if (props.selectionChanged !== null) {
+            props.selectionChanged(fullID)
         }
-        if (this.state.loadedRelevantCards !== null) {
-            if (ISearch.IsSimilarResultSuccessful(this.state.loadedRelevantCards)) {
-                const foundIdx = this.state.loadedRelevantCards.findIndex(card => (card.namespace + "/" + card.id) === fullID)
-                if (foundIdx !== -1) {
-                    this.setState({ currentSelectionIdx: foundIdx })
-                }
-            }
-        }
-    }
+        const foundIdx = relevantCards.findIndex(card => (card.namespace + "/" + card.id) === fullID)
+        if (foundIdx !== -1) {
+            setCurrentSelectionIdx(foundIdx);
+        }        
+    },[props.selectionChanged, relevantCards]);
 
-    getRelevantCards(refCard: DataModel.AnimalCard | null) {
-        const that = this;
+
+    const wheel = (e:React.WheelEvent<HTMLDivElement>) => {
+        const delta = Math.max(-1, Math.min(1, (e.deltaX || e.deltaY)))
+        e.currentTarget.scrollLeft += (delta * 35)
+        e.preventDefault()
+    }    
+
+    const relevantCardElems = React.useMemo(() => {
         const genPreview = ([foundCard, isAccent]: [ISearch.FoundSimilarCard, boolean]) => {
             const arrayKey = foundCard.namespace + "/" + foundCard.id
             return (
-                <div onClick={(e) => this.handleThumbnailSelection(arrayKey, e)} key={arrayKey}>
+                <div onClick={(e) => handleThumbnailSelection(arrayKey, e)} key={arrayKey}>
                     <AnimalCardThumbnailById
                         key={arrayKey}
-                        refCard={refCard}
+                        refCard={props.referenceCard}
                         isAccented={isAccent}
-                        cardStorage={that.props.cardStorage}
+                        cardStorage={props.cardStorage}
                         namespace={foundCard.namespace}
                         localID={foundCard.id} />
                 </div>)
         }
 
-        if (this.state.loadedRelevantCards === null) {
-            return <p>Загрузка совпадений...</p>;
-        } else {
-            if (ISearch.IsSimilarResultSuccessful(this.state.loadedRelevantCards)) {
-                const selectedIdx = this.state.currentSelectionIdx % this.state.loadedRelevantCards.length
-                var previews = this.state.loadedRelevantCards.map((card, idx) => [card, (idx === selectedIdx)] as [ISearch.FoundSimilarCard, boolean]).map(genPreview)
-                if (previews.length === 0)
-                    previews = [<p>Нет совпадений =(</p>]
-                return <div className="thumbnails-container">{previews}</div>
-            }
-        }
-    }
+        const loadingIndication = isSearchInProgress ? <><p>Поиск совпадений: {searchPercentage.toFixed(0)}%</p><hr/></> : null;
+        const effectiveSelectedIdx = relevantCards.length>0 ? (currentSelectionIdx % relevantCards.length) : 0;
+        var previews = relevantCards.length>0 ?
+            relevantCards.map((card, idx) => [card, (idx === effectiveSelectedIdx)] as [ISearch.FoundSimilarCard, boolean]).map(genPreview) :
+            [<p>Нет совпадений =(</p>]
+        
+        return <>
+            {loadingIndication}
+            <div className="thumbnails-container">{previews}</div>
+            </>        
+    },[relevantCards, props.referenceCard, props.cardStorage, currentSelectionIdx, isSearchInProgress, searchPercentage])    
 
-    wheel(e:React.WheelEvent<HTMLDivElement>) {
-        const delta = Math.max(-1, Math.min(1, (e.deltaX || e.deltaY)))
-        e.currentTarget.scrollLeft += (delta * 35)
-        e.preventDefault()
-    }
-
-    render() {
-        if (this.props.referenceCard !== null) {
-            const releavantCards = this.getRelevantCards(this.props.referenceCard);
-            return (
-                <div className="page" onWheel={e => this.wheel(e)}>
-                    <div className="title-container">
-                        <p>Возможные совпадения:</p>
-                    </div>
-                    {releavantCards}
+    
+    if (props.referenceCard !== null) {        
+        return (
+            <div className="page" onWheel={e => this.wheel(e)}>
+                <div className="title-container">
+                    <p>Возможные совпадения:</p>
                 </div>
-            )
-        } else {
-            return <p>Загрузка...</p>
-        }
+                {relevantCardElems}
+            </div>
+        )
+    } else {
+        return <p>Загрузка...</p>
     }
+    
 }

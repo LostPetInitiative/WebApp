@@ -1,10 +1,10 @@
 import * as React from "react";
 import AnimalPhotos from "./AnimalPhotos";
-import { AnnotatedImage } from "./DataModel";
+import { AnimalPhoto } from "./DataModel";
 import './CarouselImgViewer.scss'
 
 type PropsType = {
-    imgSrcArray: AnnotatedImage[]
+    imgSrcArray: AnimalPhoto[]
 }
 
 type StateType ={

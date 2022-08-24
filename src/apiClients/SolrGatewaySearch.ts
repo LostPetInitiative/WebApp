@@ -7,7 +7,8 @@ type FoundCard = {
 
 type EndOfStreamMarker = {
     EOF: boolean,
-    RESPONSE_TIME: number
+    RESPONSE_TIME: number,
+    EXCEPTION?: string
 }
 
 type SolrSuccessfulStream = {
@@ -33,13 +34,16 @@ type GatewayRequest = {
 class SolrGatewaySearch implements ISearch.ISearch {
     private readonly gatewayAddr: string;
     private readonly matchedCardsSearchURL: string;
+    private readonly matchedImagesSearchURL: string;
     private readonly latestCardsSearchURL: string;
 
     constructor(gatewayAddr: string) {
         this.gatewayAddr = gatewayAddr;
         this.matchedCardsSearchURL = gatewayAddr + "/MatchedCardsSearch";
+        this.matchedImagesSearchURL = gatewayAddr + "/MatchedImagesSearch";
         this.latestCardsSearchURL = gatewayAddr + "/latestCards"
     }
+    
 
     async GetLatestCards(maxCardNumber: number, cardType: ISearch.LatestCardSearchType): Promise<ISearch.FoundCard[]> {
         const requestParams: {
@@ -94,7 +98,60 @@ class SolrGatewaySearch implements ISearch.ISearch {
 
     }
 
-    async GetRelevantCards(lat: number, lon: number, animal: ISearch.Animal, eventType: ISearch.EventType, EventTime: Date, featuresIdent: string, features: number[]): Promise<ISearch.SimilarSearchResult> {
+    async GetRelevantImagesByImageFeatures(lat: number, lon: number, animal: ISearch.Animal, eventType: ISearch.EventType, EventTime: Date, featuresIdent: string, features: number[]): Promise<ISearch.SimilarImageSearchResult> {
+        var gatewayRequest: GatewayRequest = {
+            Lat: lat,
+            Lon: lon,
+            Animal: animal,
+            EventType: eventType,
+            EventTime: EventTime.toISOString(),
+            FeaturesIdent: featuresIdent === "CalZhiruiHeadTwinTransformer" ? "cze" : featuresIdent, // TODO: remove this dirty mapping hack
+            Features: features
+        }
+        const jsonGatewayRequest:string = JSON.stringify(gatewayRequest)
+        console.log(`Issueing request`)
+        console.log(gatewayRequest)
+        console.log(jsonGatewayRequest)
+        var fetchRes = await fetch(this.matchedImagesSearchURL, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: jsonGatewayRequest
+        })
+        if (fetchRes.ok) {
+            const parsed: SolrSuccessfulStream = await fetchRes.json()
+            const result: ISearch.FoundSimilarImage[] = []
+            var i = 0;
+            const docs = parsed["result-set"].docs;
+            while ((i < docs.length)) {
+                var current = docs[i]                
+                if (isEndOfTheStream(current)) {
+                    if(Object.keys(current).some(k => k === "EXCEPTION")){
+                        return {ErrorMessage: current.EXCEPTION }
+                    }
+                    break;
+                } else {
+                    const parts = current.id.split('/')
+                    result.push({
+                        namespace: parts[0],
+                        id: parts[1],
+                        imNum: Number.parseInt(parts[2]),
+                        similarity: current.similarity
+                    });
+                }
+                i++;
+            }
+            return result;
+        } else {
+            var errorMess = "Non successful error code " + fetchRes.status + " for fetching relevant cards: " + fetchRes.statusText;
+            console.error(errorMess)
+            return { ErrorMessage: errorMess }
+        }
+    }
+
+    async GetRelevantCardsByCardFeatures(lat: number, lon: number, animal: ISearch.Animal, eventType: ISearch.EventType, EventTime: Date, featuresIdent: string, features: number[]): Promise<ISearch.SimilarCardSearchResult> {
         var gatewayRequest: GatewayRequest = {
             Lat: lat,
             Lon: lon,

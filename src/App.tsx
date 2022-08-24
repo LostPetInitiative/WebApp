@@ -28,8 +28,8 @@ var cardStorageURL: string
 var solrGatewayURL: string
 if (development) {
   console.log("Running in development mode")
-  cardStorageURL = "http://10.0.4.174:3000"
-  solrGatewayURL = "http://10.0.4.174:3001"
+  cardStorageURL = "http://10.0.4.12:31642"
+  solrGatewayURL = "http://localhost:49153"
   //cardStorageURL = "https://kashtanka.pet/api/storage"
   //solrGatewayURL = "https://kashtanka.pet/api/search"
 } else {
@@ -114,7 +114,7 @@ function Menu() {
       <NavLink to="/board" activeClassName="activePage">
         <div className="menuItem">
           <img alt='Доска карточек' className="active" src={TrelloLogoOrange} />
-          <img alt='Доска карточек' className="inactive" src={TrelloLogoPale} />
+          <img alt='Доска картоек' className="inactive" src={TrelloLogoPale} />
         </div>
       </NavLink>
       <NavLink to="/candidatesReview/" activeClassName="activePage" title="Сравнение объявлений">
