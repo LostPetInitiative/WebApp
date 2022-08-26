@@ -122,13 +122,6 @@ export class AnimalCardThumbnailById
     }
 }
 
-
-type CandidatesThumbnailsStateType = {
-    shownReferenceCardId: string,
-    loadedRelevantCards: ISearch.SimilarCardSearchResult | null,
-    currentSelectionIdx: number
-}
-
 type CandidatesThumbnailsPropsType = {
     referenceCard: DataModel.AnimalCard | null
     selectedCardFullID: string,

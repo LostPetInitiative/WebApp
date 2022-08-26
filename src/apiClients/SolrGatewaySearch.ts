@@ -109,9 +109,9 @@ class SolrGatewaySearch implements ISearch.ISearch {
             Features: features
         }
         const jsonGatewayRequest:string = JSON.stringify(gatewayRequest)
-        console.log(`Issueing request`)
-        console.log(gatewayRequest)
-        console.log(jsonGatewayRequest)
+        // console.log(`Issueing request`)
+        // console.log(gatewayRequest)
+        // console.log(jsonGatewayRequest)
         var fetchRes = await fetch(this.matchedImagesSearchURL, {
             method: "POST",
             headers: {

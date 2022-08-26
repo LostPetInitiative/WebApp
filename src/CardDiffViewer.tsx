@@ -13,9 +13,8 @@ import DistanceTimeSVG from './img/distanceT.svg'
 import SexMismatchWarningSVG from './img/genderDiffers.svg'
 
 /// Presents the difference between two cards
-function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: DataModel.AnimalCard }) {
-    const card1 = props.card1;
-    const card2 = props.card2;
+export function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: DataModel.AnimalCard, card1ImgNum?: number, card2ImgNum?: number }) {
+    const {card1, card2, card1ImgNum, card2ImgNum} = props;
     const geoDistKM = Comp.geodistance(
         card1.location.lat,
         card1.location.lon,
@@ -26,6 +25,19 @@ function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: DataModel.A
     const timeDiffMs = Math.abs(new Date(card1.eventTime).getTime() - new Date(card2.eventTime).getTime());
     const timeDiffStr = Utils.getTimeDiffString(timeDiffMs)
     
+    function getFeaturesDiff() {
+        //console.log(`images ${card1ImgNum} ${card2ImgNum}`)
+        if(card1ImgNum==undefined || card2ImgNum == undefined)
+            return null;
+        const featuresIdent = "CalZhiruiHeadTwinTransformer"
+        const firstCardFeatures = card1.photos[card1ImgNum].featureVectors[featuresIdent];
+        const secondCardFeatures = card2.photos[card2ImgNum].featureVectors[featuresIdent];
+
+        const cosSim = Comp.cosSimilarity(firstCardFeatures, secondCardFeatures);
+        console.log(`cos sim ${cosSim}`)
+        return <p>{(cosSim*100.0).toFixed(2)}%</p>
+    }
+
     function getSexWarning() {
         if
             ((card1.animalSex !== card2.animalSex) &&
@@ -58,6 +70,9 @@ function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: DataModel.A
             </div>
             <div className="cardDiffItems">
                 <img className="cardDiffIcons" src={DistanceTimeSVG} alt="Между событиями прошло" title="Между событиями прошло"/>{timeDiffStr}
+            </div>
+            <div className="cardDiffItems">
+                {getFeaturesDiff()}
             </div>
             {/* {getFeaturesDifferences()} */}
             <div className="cardDiffWarnings">
