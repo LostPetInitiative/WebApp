@@ -14,7 +14,6 @@ export function CarouselImgViewer(props: PropsType) {
 
     React.useEffect(() => {
         props.onImgIdxChange?.(selectedIndex);
-        console.log(`effect img change: ${selectedIndex} ${props.onImgIdxChange}`)
     },[props.onImgIdxChange, selectedIndex])
 
     const selectIndex = (selected : number) => {

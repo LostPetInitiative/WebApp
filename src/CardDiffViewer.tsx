@@ -11,6 +11,7 @@ function WarningMessage(props: { message: string }) {
 import DistanceSpaceSVG from './img/distanceS.svg'
 import DistanceTimeSVG from './img/distanceT.svg'
 import SexMismatchWarningSVG from './img/genderDiffers.svg'
+import { _ImageEmbeddingToUse } from "./consts";
 
 /// Presents the difference between two cards
 export function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: DataModel.AnimalCard, card1ImgNum?: number, card2ImgNum?: number }) {
@@ -29,12 +30,12 @@ export function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: Data
         //console.log(`images ${card1ImgNum} ${card2ImgNum}`)
         if(card1ImgNum==undefined || card2ImgNum == undefined)
             return null;
-        const featuresIdent = "CalZhiruiHeadTwinTransformer"
+        const featuresIdent = _ImageEmbeddingToUse
         const firstCardFeatures = card1.photos[card1ImgNum].featureVectors[featuresIdent];
         const secondCardFeatures = card2.photos[card2ImgNum].featureVectors[featuresIdent];
 
         const cosSim = Comp.cosSimilarity(firstCardFeatures, secondCardFeatures);
-        console.log(`cos sim ${cosSim}`)
+        
         return <p>{(cosSim*100.0).toFixed(2)}%</p>
     }
 

@@ -13,7 +13,7 @@ type PropsType = {
 }
 
 type StateType = {
-    foundCards: ISearch.FoundCard[] | null,
+    foundCards: ISearch.FoundDoc[] | null,
     currentlyShownType: ISearch.LatestCardSearchType,
     currentlyShownCount: number
 }
@@ -67,7 +67,7 @@ class LatestCardsPreview extends React.Component<PropsType, StateType> {
             if (this.state.foundCards.length === 0) {
                 return <p>Не удалось загрузить свежие объявления</p>
             } else {
-                const cardToViewer = (card: ISearch.FoundCard, idx: number, array: ISearch.FoundCard[]) => {
+                const cardToViewer = (card: ISearch.FoundDoc, idx: number, array: ISearch.FoundDoc[]) => {
                     const fullID = card.namespace + "/" + card.id
                     return (
                         <div onClick={(e) => this.handleThumbnailClick(fullID, e)} key={fullID}>

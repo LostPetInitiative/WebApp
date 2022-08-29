@@ -1,9 +1,16 @@
+import { _CassandraImageEmbeddingName, _ImageEmbeddingToUse, _SolrImageEmbeddingName } from "../consts";
 import * as ISearch from "./ISearch";
 
-type FoundCard = {
+type FoundDocument = {
     id: string,
-    similarity: number
 }
+
+type FoundDocWithFeatures =
+    FoundDocument & {[key:string]:number[]}
+
+type FoundDocWithSimilarity = {
+    similarity: number
+} & FoundDocument
 
 type EndOfStreamMarker = {
     EOF: boolean,
@@ -13,12 +20,22 @@ type EndOfStreamMarker = {
 
 type SolrSuccessfulStream = {
     "result-set": {
-        "docs": (FoundCard | EndOfStreamMarker)[]
+        "docs": (FoundDocWithSimilarity | EndOfStreamMarker)[]
     }
 }
 
-function isEndOfTheStream(elem: FoundCard | EndOfStreamMarker): elem is EndOfStreamMarker {
+function isEndOfTheStream(elem: FoundDocWithSimilarity | EndOfStreamMarker): elem is EndOfStreamMarker {
     return (elem as EndOfStreamMarker).EOF !== undefined;
+}
+
+type SolrSelectResult = {
+    response: {
+        numFound: number,
+        start: number,
+        numFoundExact: boolean,
+        maxScore: number,
+        docs: FoundDocWithFeatures[]
+    }
 }
 
 type GatewayRequest = {
@@ -28,7 +45,9 @@ type GatewayRequest = {
     EventType: ISearch.EventType,
     EventTime: string,
     FeaturesIdent: string,
-    Features: number[]
+    Features: number[],
+    FilterFar?: boolean,
+    FilterLongAgo?: boolean
 }
 
 class SolrGatewaySearch implements ISearch.ISearch {
@@ -45,7 +64,7 @@ class SolrGatewaySearch implements ISearch.ISearch {
     }
     
 
-    async GetLatestCards(maxCardNumber: number, cardType: ISearch.LatestCardSearchType): Promise<ISearch.FoundCard[]> {
+    async GetLatestCards(maxCardNumber: number, cardType: ISearch.LatestCardSearchType): Promise<ISearch.FoundDoc[]> {
         const requestParams: {
             [key: string]: string;
         } = {}
@@ -82,7 +101,7 @@ class SolrGatewaySearch implements ISearch.ISearch {
 
             const parseId = (arg: {'id' : string}) => {
                 const split=arg.id.split('/')
-                const res: ISearch.FoundCard = {
+                const res: ISearch.FoundDoc = {
                     namespace: split[0],
                     id: split[1]
                 }
@@ -98,15 +117,19 @@ class SolrGatewaySearch implements ISearch.ISearch {
 
     }
 
-    async GetRelevantImagesByImageFeatures(lat: number, lon: number, animal: ISearch.Animal, eventType: ISearch.EventType, EventTime: Date, featuresIdent: string, features: number[]): Promise<ISearch.SimilarImageSearchResult> {
+    async GetRelevantImagesByImageFeatures(
+        lat: number, lon: number, animal: ISearch.Animal, eventType: ISearch.EventType, EventTime: Date, featuresIdent: string, features: number[],
+        filterFar?:boolean, filterLongAgo?:boolean): Promise<ISearch.SimilarImageSearchResult> {
         var gatewayRequest: GatewayRequest = {
             Lat: lat,
             Lon: lon,
             Animal: animal,
             EventType: eventType,
             EventTime: EventTime.toISOString(),
-            FeaturesIdent: featuresIdent === "CalZhiruiHeadTwinTransformer" ? "cze" : featuresIdent, // TODO: remove this dirty mapping hack
-            Features: features
+            FeaturesIdent: featuresIdent,
+            Features: features,
+            FilterFar: filterFar,
+            FilterLongAgo: filterLongAgo
         }
         const jsonGatewayRequest:string = JSON.stringify(gatewayRequest)
         // console.log(`Issueing request`)
@@ -121,28 +144,41 @@ class SolrGatewaySearch implements ISearch.ISearch {
             body: jsonGatewayRequest
         })
         if (fetchRes.ok) {
-            const parsed: SolrSuccessfulStream = await fetchRes.json()
-            const result: ISearch.FoundSimilarImage[] = []
-            var i = 0;
-            const docs = parsed["result-set"].docs;
-            while ((i < docs.length)) {
-                var current = docs[i]                
-                if (isEndOfTheStream(current)) {
-                    if(Object.keys(current).some(k => k === "EXCEPTION")){
-                        return {ErrorMessage: current.EXCEPTION }
-                    }
-                    break;
-                } else {
-                    const parts = current.id.split('/')
-                    result.push({
-                        namespace: parts[0],
-                        id: parts[1],
-                        imNum: Number.parseInt(parts[2]),
-                        similarity: current.similarity
-                    });
+            const parsed: SolrSelectResult = await fetchRes.json()
+            const result: ISearch.FoundImageWithFeatures[] = parsed.response.docs.map(x => {
+                const [namespace, id, imNumStr] = x.id.split('/');
+                const res: ISearch.FoundImageWithFeatures = {
+                    namespace,
+                    id,
+                    imNum: Number.parseInt(imNumStr),
                 }
-                i++;
-            }
+                //console.log("x",x)
+                if(Object.keys(x).some(k => k === _SolrImageEmbeddingName))
+                    res[_ImageEmbeddingToUse] = x[_SolrImageEmbeddingName]
+                //console.log('res',res)
+                return res;
+            });
+
+            // var i = 0;
+            // const docs = parsed["result-set"].docs;
+            // while ((i < docs.length)) {
+            //     var current = docs[i]                
+            //     if (isEndOfTheStream(current)) {
+            //         if(Object.keys(current).some(k => k === "EXCEPTION")){
+            //             return {ErrorMessage: current.EXCEPTION }
+            //         }
+            //         break;
+            //     } else {
+            //         const parts = current.id.split('/')
+            //         result.push({
+            //             namespace: parts[0],
+            //             id: parts[1],
+            //             imNum: Number.parseInt(parts[2]),
+            //             similarity: current.similarity
+            //         });
+            //     }
+            //     i++;
+            // }
             return result;
         } else {
             var errorMess = "Non successful error code " + fetchRes.status + " for fetching relevant cards: " + fetchRes.statusText;
@@ -151,6 +187,7 @@ class SolrGatewaySearch implements ISearch.ISearch {
         }
     }
 
+    /*
     async GetRelevantCardsByCardFeatures(lat: number, lon: number, animal: ISearch.Animal, eventType: ISearch.EventType, EventTime: Date, featuresIdent: string, features: number[]): Promise<ISearch.SimilarCardSearchResult> {
         var gatewayRequest: GatewayRequest = {
             Lat: lat,
@@ -194,7 +231,7 @@ class SolrGatewaySearch implements ISearch.ISearch {
             console.error(errorMess)
             return { ErrorMessage: errorMess }
         }
-    }
+    }*/
 }
 
 export default SolrGatewaySearch;

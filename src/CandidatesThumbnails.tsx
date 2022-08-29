@@ -8,6 +8,9 @@ import * as Utils from "./Utils"
 import * as ISearch from "./apiClients/ISearch"
 import "./CandidatesThumbnails.scss"
 import * as im from "immutable"
+import {_ImageEmbeddingToUse} from "./consts"
+
+import {Stack, Toggle, Spinner, StackItem, Text} from '@fluentui/react'
 
 /**
  * Renders the thumbnail for the card specified in card prop
@@ -20,6 +23,23 @@ export function AnimalCardThumbnail(props: {
     refCard: DataModel.AnimalCard | null
 }) {
     const card = props.card;
+
+    var similarity:undefined | number = undefined
+    if(props.refCard != null) {
+        similarity = -1.0;
+        for(const refIm of props.refCard.photos) {
+            if(!Object.keys(refIm.featureVectors).some(x => x === _ImageEmbeddingToUse))
+                continue;
+            for(const im of props.card.photos) {
+                if(!Object.keys(im.featureVectors).some(x => x === _ImageEmbeddingToUse))
+                    continue;
+                const curSim = Comp.cosSimilarity(
+                    refIm.featureVectors[_ImageEmbeddingToUse],
+                    im.featureVectors[_ImageEmbeddingToUse])
+                similarity = curSim > similarity ? curSim : similarity;
+            }
+        }
+    }
 
     var geoString;
     if (props.refCard !== null) {
@@ -42,12 +62,17 @@ export function AnimalCardThumbnail(props: {
     }
 
     const thumbnailContainerClassName = "thumbnail-container" + (props.isAccent ? " accent" : "")
+
+    const similarityText = similarity !== undefined ?
+        (<p className="overlay-text">{(similarity*100.0).toFixed(2)}%</p>) : null
+
     return (
         <div className={thumbnailContainerClassName}>
             <div className="overlay-info-anchor">
                 <div className="overlay-info">
                     <p className="overlay-text">{timeString}</p>
                     <p className="overlay-text">{geoString}</p>
+                    {similarityText}
                 </div>
             </div>
             { card.photos.length > 0 &&
@@ -155,7 +180,7 @@ type SimilarSearchMode =
 function determineSearchMode(card?: DataModel.AnimalCard) : SimilarSearchMode {
     if(card == null)       
         return { type: SimilarSearchModeEnum.Off };
-    return { type: SimilarSearchModeEnum.ImageFeatures, featuresIdent: "CalZhiruiHeadTwinTransformer" };
+    return { type: SimilarSearchModeEnum.ImageFeatures, featuresIdent: _ImageEmbeddingToUse };
     if(card.features != null && Object.keys(card.features).length>0) {        
         const featuresIdent = Object.keys(card.features)[0]
         return { type: SimilarSearchModeEnum.CardFeatures, featuresIdent: featuresIdent}
@@ -170,9 +195,9 @@ enum SearchStateEnum {None, SearchingViaCardFeatures, SearchingViaImageFeatures}
 type SearchState =
     {type: SearchStateEnum.None} |
     {type: SearchStateEnum.SearchingViaCardFeatures, found: ISearch.SimilarCardSearchResult | "InProgress" } |
-    {type: SearchStateEnum.SearchingViaImageFeatures, found: im.Map<number,ISearch.FoundSimilarImage[]>, imagesToSearchCount: number }
+    {type: SearchStateEnum.SearchingViaImageFeatures, found: im.Map<number,ISearch.SimilarImageSearchResult>, imagesToSearchCount: number }
 
-function extractRelevantCards(state: SearchState): ISearch.FoundCard[] {
+function extractRelevantCards(state: SearchState, referenceCard?: DataModel.AnimalCard): ISearch.FoundSimilarDoc[] {
     switch(state.type) {
         case SearchStateEnum.None:
             return [];
@@ -183,21 +208,69 @@ function extractRelevantCards(state: SearchState): ISearch.FoundCard[] {
                 return [];
             return state.found;
         case SearchStateEnum.SearchingViaImageFeatures:
-            const result: ISearch.FoundCard[] = [];
-            const fullIds = new Set<string>();
+            const referenceImageVectors:number[][] = 
+                referenceCard === undefined ? [] :
+                referenceCard.photos
+                    .map(x => (Object.keys(x.featureVectors).some(k => k === _ImageEmbeddingToUse)) ? x.featureVectors[_ImageEmbeddingToUse] : undefined)
+                    .filter(x => x != undefined);
+
+            const maxSimMap: Map<string,number> = new Map();
             for(const [num,images] of state.found) {
-                for(const im of images) {
-                    const fullID = `${im.namespace}/${im.id}`
-                    if(!fullIds.has(fullID)) { // we are collecting only distinct cards (in case there are several images in the same card)
-                        fullIds.add(fullID);
-                        result.push(im);
-                    }
-                }                
+                // we need to build map: cardID -> similarity
+                if(ISearch.IsSimilarImageResultSuccessful(images))
+                    for(const im of images) {
+                        const fullID = `${im.namespace}/${im.id}`
+                        const prevSimForTheCard = maxSimMap.has(fullID) ? maxSimMap.get(fullID) : -1.0;
+                        const newMaxSim = referenceImageVectors.reduce(
+                            (acc, refVec) => {
+                                const sim = Comp.cosSimilarity(im[_ImageEmbeddingToUse],refVec)
+                                return acc > sim ? acc : sim;
+                            }, prevSimForTheCard)
+                            
+                        maxSimMap.set(fullID, newMaxSim)
+                    }                
             }
+
+            const result: (ISearch.FoundSimilarDoc)[] = [];
+            for(const [fullID, similarity] of maxSimMap.entries()) {
+                const [namespace,id] = fullID.split('/')
+                result.push({namespace,id,similarity})
+            }
+            
+            result.sort((a,b) => b.similarity - a.similarity)
+            
             return result;
         default:
             const n:never = state;
             throw "exhaustive checks failed"
+    }
+}
+
+function extractErrorMessage(state:SearchState) : string|undefined {
+    switch(state.type) {
+        case SearchStateEnum.None:
+            return undefined;
+        case SearchStateEnum.SearchingViaCardFeatures:
+            if(state.found === "InProgress")
+                return undefined;
+            else if (ISearch.IsSimilarCardResultSuccessful(state.found))
+                return undefined;
+            else
+                return state.found.ErrorMessage;
+        case SearchStateEnum.SearchingViaImageFeatures:
+            const errMsgs:string[] = [];
+            for(const v of state.found.values()) {
+                if(ISearch.IsSimilarImageResultSuccessful(v))
+                    continue;
+                errMsgs.push(v.ErrorMessage);
+            }
+            if(errMsgs.length === 0)
+                return undefined;
+            else
+                return errMsgs.join(", ");
+        default:
+            const v:never = state;
+            throw "compile time exhaustive check";
     }
 }
 
@@ -229,7 +302,11 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
 
     const searchMode:SimilarSearchMode = determineSearchMode(props.referenceCard);
 
-    const relevantCards = extractRelevantCards(searchState);
+    const relevantCards = extractRelevantCards(searchState, props.referenceCard);
+    const errorMessage:string = extractErrorMessage(searchState);
+
+    const [farFilterEnabled, setFarFilterEnabled] = useState(true)
+    const [longAgoFilterEnabled, setLongAgoFilterEnabled] = useState(true)
 
     React.useEffect(() => {
         // trying to set proper selected relevant card by looking for the desired card
@@ -256,7 +333,9 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
         const card = props.referenceCard;
 
         switch(searchMode.type) {
-            case SimilarSearchModeEnum.CardFeatures:                
+            case SimilarSearchModeEnum.CardFeatures:
+                throw "not implemented";               
+                /*
                 const featuresIdent = searchMode.featuresIdent;                 
                 console.log(`initiating search of relevant cards by card features \"${searchMode.featuresIdent}\" for ${requestedFullID}`);
                 setSearchState({
@@ -279,6 +358,7 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
                     });
                 }, error => console.error(`Search promise rejected: ${error}`));
                 break;
+                */
             case SimilarSearchModeEnum.ImageFeatures:
                 // for each image issue a request                                
                 setSearchState({
@@ -294,7 +374,10 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
                         marshalEventType(card.cardType),
                         card.eventTime,
                         searchMode.featuresIdent,
-                        image.featureVectors[searchMode.featuresIdent]).then(res => {
+                        image.featureVectors[searchMode.featuresIdent],
+                        farFilterEnabled,
+                        longAgoFilterEnabled
+                        ).then(res => {
                             console.log("image search continuation",res)
                             if(snapshotedBackgroundFetchId !== backgroundFetchId.current) {
                                 console.warn(`Discarding stale search by image features num ${snapshotedBackgroundFetchId}`);
@@ -305,7 +388,7 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
                             else
                                 console.error(`Got failure for similar images for ${card.namespace}/${card.id}/${imNum}: ${res.ErrorMessage}`)
                             setSearchState(oldState => {
-                                    if(oldState.type === SearchStateEnum.SearchingViaImageFeatures && ISearch.IsSimilarImageResultSuccessful(res)) {
+                                    if(oldState.type === SearchStateEnum.SearchingViaImageFeatures) {
                                         return {
                                             ...oldState,
                                             found: oldState.found.set(imNum,res)
@@ -327,7 +410,7 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
                 const n:never = searchMode; // compile time exhaustive check
                 throw "Unsupported similar card search type";
         }
-    },[requestedFullID, searchMode.type, props.searcher])
+    },[requestedFullID, searchMode.type, props.searcher, farFilterEnabled, longAgoFilterEnabled])
 
     const handleThumbnailSelection = React.useCallback((fullID: string, e: (React.MouseEvent | null)) => {
         if (props.selectionChanged !== null) {
@@ -346,8 +429,10 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
         e.preventDefault()
     }    
 
+    const errorMessageComp = errorMessage === undefined ? null : (<p>Ошибка: {errorMessage}</p>)
+
     const relevantCardElems = React.useMemo(() => {
-        const genPreview = ([foundCard, isAccent]: [ISearch.FoundSimilarCard, boolean]) => {
+        const genPreview = ([foundCard, isAccent]: [ISearch.FoundSimilarDoc, boolean]) => {
             const arrayKey = foundCard.namespace + "/" + foundCard.id
             return (
                 <div onClick={(e) => handleThumbnailSelection(arrayKey, e)} key={arrayKey}>
@@ -361,10 +446,10 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
                 </div>)
         }
 
-        const loadingIndication = isSearchInProgress ? <><p>Поиск совпадений: {searchPercentage.toFixed(0)}%</p><hr/></> : null;
+        const loadingIndication = isSearchInProgress ? <Spinner label="Поиск совпадений..."></Spinner> : null;
         const effectiveSelectedIdx = relevantCards.length>0 ? (currentSelectionIdx % relevantCards.length) : 0;
-        var previews = relevantCards.length>0 ?
-            relevantCards.map((card, idx) => [card, (idx === effectiveSelectedIdx)] as [ISearch.FoundSimilarCard, boolean]).map(genPreview) :
+        var previews = (relevantCards.length>0 || isSearchInProgress) ?
+            relevantCards.map((card, idx) => [card, (idx === effectiveSelectedIdx)] as [ISearch.FoundSimilarDoc, boolean]).map(genPreview) :
             [<p>Нет совпадений =(</p>]
         
         return <>
@@ -377,9 +462,20 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
     if (props.referenceCard !== null) {        
         return (
             <div className="page" onWheel={e => this.wheel(e)}>
-                <div className="title-container">
-                    <p>Возможные совпадения:</p>
-                </div>
+                {/* <div className="title-container"> */}
+                <Stack>
+                    <Toggle
+                        label="Фильтр по расстоянию" onText="Далекие исключены" onChange={(_,checked) => setFarFilterEnabled(checked)}
+                        defaultChecked={farFilterEnabled} ></Toggle>
+                    <Toggle label="Фильтр по времени" onText="Давние исключены" onChange={(_,checked) => setLongAgoFilterEnabled(checked)}
+                        defaultChecked={longAgoFilterEnabled}
+                    ></Toggle>
+                    <StackItem align="end">
+                        <p>Возможные совпадения:</p>
+                    </StackItem>
+                </Stack>
+                {/* </div> */}
+                {errorMessageComp}
                 {relevantCardElems}
             </div>
         )
