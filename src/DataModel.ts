@@ -2,9 +2,11 @@ export enum CardType { Found = "found", Lost = "lost" }
 export enum Animal { Cat = "cat", Dog = "dog" }
 export enum Sex { Unknown = "unknown", Male = "male", Female = "female" }
 
-export type AnnotatedImage = {
-    ID: number;
+export type AnimalPhoto = {
+    imageNum: number;
+    uuid: string;
     srcUrl: string;
+    featureVectors: FeaturesDict;
 }
 
 type Location = {
@@ -29,7 +31,7 @@ export type AnimalCard = {
     cardCreationTime: Date;
     location: Location;
     animalSex : Sex;
-    photos : AnnotatedImage[];
+    photos: AnimalPhoto[];
     provenanceURL : string;
     features : FeaturesDict;
 }

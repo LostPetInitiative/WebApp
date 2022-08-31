@@ -7,9 +7,11 @@ export enum CardType { Found = "found", Lost = "lost" }
 export enum Animal { Cat = "cat", Dog = "dog" }
 export enum Sex { Unknown = "unknown", Male = "male", Female = "female" }
 
-export type AnnotatedImage = {
-    ID: number;
+export type AnimalPhoto = {
+    imageNum: number;
+    uuid: string;
     srcUrl: string;
+    featureVectors: FeaturesDict;
 }
 
 type Location = {
@@ -32,7 +34,7 @@ export type AnimalCard = {
     cardCreationTime: string; // iso string
     location: Location;
     animalSex: Sex;
-    photos: AnnotatedImage[];
+    photos: AnimalPhoto[];
     provenanceURL: string;
     features: FeaturesDict;
 }
@@ -59,7 +61,7 @@ export class CardStorage implements ICardStorage.ICardStorage {
             })
             ));
 
-        const photosURL = this.serviceURL + "/PetPhotos/" + namespace + "/" + localID;
+        const photosURL = this.serviceURL + "/PetPhotos/" + namespace + "/" + localID +"?featuresToInclude=CalZhiruiHeadTwinTransformer";
         var cardPhotosPromise = fetch(photosURL).then(response =>
             response.json().then(data => ({
                 data: data,
@@ -74,10 +76,10 @@ export class CardStorage implements ICardStorage.ICardStorage {
                     UnexistentCardID: localID
                 }
             } else {
-                const photosArr: AnnotatedImage[] = values[1].data.map((i: { imageNum: number }) => {
+                const photosArr: AnimalPhoto[] = values[1].data.map((i: Omit<AnimalPhoto,"srcUrl">) => {
                     return {
-                        ID: i.imageNum,
-                        srcUrl: this.serviceURL + "/PetPhotos/" + namespace + "/" + localID + "/" + i.imageNum + "/annotated"
+                        ...i,
+                        srcUrl: this.serviceURL + "/PetPhotos/" + namespace + "/" + localID + "/" + i.imageNum + "?preferableProcessingsStr=CalZhiruiAnnotatedHead"                        
                     }
                 });
                 var downloadedCard: AnimalCard = values[0].data;

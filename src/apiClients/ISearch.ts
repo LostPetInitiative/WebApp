@@ -1,23 +1,39 @@
-export type FoundCard = {
-    namespace: string,
-    id: string
-}
-
-export type FoundSimilarCard = {
+export type FoundDoc = {
     namespace: string,
     id: string,
-    similarity: number
 }
+
+export type FoundDocWithFeatures =
+    FoundDoc & {[key:string]: any}
+
+export type FoundImageWithFeatures = 
+    FoundDocWithFeatures & {imNum: number}
+
+export type FoundSimilarDoc = {
+    similarity: number
+} & FoundDoc
+
+export type FoundSimilarImage = {
+    imNum: number,
+} & FoundSimilarDoc;
 
 export type SearchError = {
     ErrorMessage : string
 }
 
-export type SimilarSearchResult = FoundSimilarCard[] | SearchError;
+export type SearchResult<SuccessfulResult> = SuccessfulResult | SearchError;
 
-export function IsSimilarResultSuccessful(searchResult: SimilarSearchResult): searchResult is FoundSimilarCard[] {
+export type SimilarCardSearchResult =  SearchResult<FoundSimilarDoc[]>;
+export type SimilarImageSearchResult = SearchResult<FoundImageWithFeatures[]>;
+
+export function IsSimilarCardResultSuccessful(searchResult: SimilarCardSearchResult): searchResult is FoundSimilarDoc[] {
     return Array.isArray(searchResult)
 }
+
+export function IsSimilarImageResultSuccessful(searchResult: SimilarImageSearchResult): searchResult is FoundImageWithFeatures[] {
+    return Array.isArray(searchResult)
+}
+
 
 export enum EventType { Found = "Found", Lost = "Lost" }
 export enum Animal { Cat = "Cat", Dog = "Dog" }
@@ -25,8 +41,13 @@ export enum Animal { Cat = "Cat", Dog = "Dog" }
 export enum LatestCardSearchType { Lost, Found, Unspecified }
 
 export interface ISearch {
-    GetRelevantCards(lat:number, lon:number, animal: Animal, eventType:EventType,
-        EventTime: Date, featuresIdent: string, features: number[] ) : Promise<SimilarSearchResult>;
+    /*
+    GetRelevantCardsByCardFeatures(lat:number, lon:number, animal: Animal, eventType:EventType,
+        EventTime: Date, featuresIdent: string, features: number[] ) : Promise<SimilarCardSearchResult>;
+    */
 
-    GetLatestCards(maxCardNumber: number, cardType: LatestCardSearchType): Promise<FoundCard[]>
+    GetRelevantImagesByImageFeatures(lat:number, lon:number, animal: Animal, eventType:EventType,
+        EventTime: Date, featuresIdent: string, features: number[], filterFar?: boolean, filterLongAgo?: boolean) : Promise<SimilarImageSearchResult>;
+
+    GetLatestCards(maxCardNumber: number, cardType: LatestCardSearchType): Promise<FoundDoc[]>
 }

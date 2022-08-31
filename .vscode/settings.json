@@ -1,7 +1,13 @@
 {
-    "cSpell.language": ",ru",
-    "cSpell.words": [
-        "каштанка",
-        "каштанкой"
-    ]
+  "cSpell.language": "ru,en-GB",
+  "cSpell.words": [
+    "каштанка",
+    "каштанкой"
+  ],
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

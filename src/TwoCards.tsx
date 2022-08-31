@@ -13,12 +13,15 @@ type PropsType = {
 }
 
 export function TwoCardsViewer(props: PropsType) {
-    function getCardViewer(card: CardAssignment) {
+    const [leftImg,setLeftImg] = React.useState(0);
+    const [rightImg, setRightImg] = React.useState(0);
+
+    function getCardViewer(card: CardAssignment, onImgChanged?:(num:number) => void) {
         switch(card) {
             case "loading": return <p>Загрузка...</p>;
             case "unassigned": return <p>Карточка не выбрана. Выберите карточку из списка снизу.</p>;
             case "unexistent": return <p>Карточка не найдена.</p>
-            default: return <AnimalCard card={card} />
+            default: return <AnimalCard card={card} imageIdxChanged={onImgChanged} />
         }
     }
 
@@ -29,12 +32,16 @@ export function TwoCardsViewer(props: PropsType) {
         }
     
         if (isAssignedCard(leftCard) && isAssignedCard(rightCard)) {
-            return <CardDiffViewer card1={leftCard} card2={rightCard} />
+            return <CardDiffViewer
+                        card1={leftCard}
+                        card2={rightCard}
+                        card1ImgNum={leftImg}
+                        card2ImgNum={rightImg} />
         } else return <div></div>;
     }
 
-    const leftViewer = getCardViewer(props.leftCard);
-    const rightViewer = getCardViewer(props.rightCard)
+    const leftViewer = getCardViewer(props.leftCard, setLeftImg);
+    const rightViewer = getCardViewer(props.rightCard, setRightImg)
     const middleViewer = getMiddleViewer(props.leftCard, props.rightCard);
     return (
         <div className="gridContainer">

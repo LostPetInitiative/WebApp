@@ -27,10 +27,13 @@ const development = window.location.hostname === "localhost"
 var cardStorageURL: string
 var solrGatewayURL: string
 if (development) {
-  // cardStorageURL = "http://10.0.4.174:3000"
-  // solrGatewayURL = "http://10.0.4.174:3001"
-  cardStorageURL = "https://kashtanka.pet/api/storage"
-  solrGatewayURL = "https://kashtanka.pet/api/search"
+  console.log("Running in development mode")
+  cardStorageURL = "http://10.0.4.12:31642"
+  solrGatewayURL = "http://10.0.4.12:30069"
+  // cardStorageURL = "http://cassandra-rest-api.kashtanka"
+  // solrGatewayURL = "http://search-gateway.kashtanka"
+  //cardStorageURL = "https://kashtanka.pet/api/storage"
+  //solrGatewayURL = "https://kashtanka.pet/api/search"
 } else {
   cardStorageURL = "api/storage"
   solrGatewayURL = "api/search"
@@ -91,31 +94,41 @@ function SpecificCandidatesReview() {
   )
 }
 
+import KashtankaLogo from './img/cat/1.jpg';
+import TrelloLogoOrange from './img/menus/board_trello_logo_orange.png'
+import TrelloLogoPale from './img/menus/board_trello_logo_pale.png'
+
+import CompareAbOrange from './img/menus/compare_ab_orange.png'
+import CompareAbPale from './img/menus/compare_ab_pale.png'
+
+import QuestionsOrange from './img/menus/questions_orange.png'
+import QuestionsPale from './img/menus/questions_pale.png'
+
 function Menu() {
 
   return (
     <div id="appStateMenu">
       <div id="headerCornerDiv">
         <NavLink to="/">
-          <img id="headerLogo" alt="Логотип Каштанки" src="./img/cat/1.jpg"></img>
+          <img id="headerLogo" alt="Логотип Каштанки" src={KashtankaLogo}></img>
         </NavLink>
       </div>
       <NavLink to="/board" activeClassName="activePage">
         <div className="menuItem">
-          <img alt='Доска карточек' className="active" src='./img/menus/board_trello_logo_orange.png' />
-          <img alt='Доска карточек' className="inactive" src='./img/menus/board_trello_logo_pale.png' />
+          <img alt='Доска карточек' className="active" src={TrelloLogoOrange} />
+          <img alt='Доска картоек' className="inactive" src={TrelloLogoPale} />
         </div>
       </NavLink>
       <NavLink to="/candidatesReview/" activeClassName="activePage" title="Сравнение объявлений">
         <div className="menuItem">
-          <img alt='Сравнение объявлений' className="active" src='./img/menus/compare_ab_orange.png' />
-          <img alt='Сравнение объявлений' className="inactive" src='./img/menus/compare_ab_pale.png' />
+          <img alt='Сравнение объявлений' className="active" src={CompareAbOrange} />
+          <img alt='Сравнение объявлений' className="inactive" src={CompareAbPale} />
         </div>
       </NavLink>
       <NavLink to="/faq" activeClassName="activePage" title="Вопросы и ответы">
         <div className="menuItem">
-          <img alt='Вопросы и ответы' className="active" src='./img/menus/questions_orange.png' />
-          <img alt='Вопросы и ответы' className="inactive" src='./img/menus/questions_pale.png' />
+          <img alt='Вопросы и ответы' className="active" src={QuestionsOrange} />
+          <img alt='Вопросы и ответы' className="inactive" src={QuestionsPale} />
         </div>
       </NavLink>
     </div >

@@ -1,9 +1,9 @@
 import * as React from "react";
 import "./AnimalCard.scss"
 import * as DataModel from "./DataModel";
-import CarouselImgViewer from "./CarouselImgViewer";
+import {CarouselImgViewer} from "./CarouselImgViewer";
 
-function AnimalCard(props: { card: DataModel.AnimalCard }) {
+function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:number) => void; }) {
     const card = props.card;
 
     function animalType(animalType: DataModel.Animal, animalGender: DataModel.Sex) {
@@ -75,7 +75,7 @@ function AnimalCard(props: { card: DataModel.AnimalCard }) {
                 </div>
                 <div className={"animalCardMain " + cardTypeClass(card.cardType)}>
                     <div className={"cardImgViewer " + cardTypeClass(card.cardType)}>
-                        <CarouselImgViewer imgSrcArray={card.photos}></CarouselImgViewer>
+                        <CarouselImgViewer imgSrcArray={card.photos} onImgIdxChange={props.imageIdxChanged} />
                     </div>
                     <div className={"cardComment " + cardTypeClass(card.cardType)}>
                         <div className={"linkToSource " + cardTypeClass(card.cardType)}>
