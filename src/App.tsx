@@ -29,7 +29,9 @@ var solrGatewayURL: string
 if (development) {
   console.log("Running in development mode")
   cardStorageURL = "http://10.0.4.12:31642"
-  solrGatewayURL = "http://localhost:49153"
+  solrGatewayURL = "http://10.0.4.12:30069"
+  // cardStorageURL = "http://cassandra-rest-api.kashtanka"
+  // solrGatewayURL = "http://search-gateway.kashtanka"
   //cardStorageURL = "https://kashtanka.pet/api/storage"
   //solrGatewayURL = "https://kashtanka.pet/api/search"
 } else {
