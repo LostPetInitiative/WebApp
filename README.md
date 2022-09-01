@@ -11,6 +11,8 @@ The application provides an interface between the human volunteers and the kasht
 
 The app is single page application (SPA) made with TypeScript + React + Webpack + CSCC toolchain, wrapped into Docker image.
 
+It communicates with the REST APIs of the kashtanka.pet system.
+
 All pull requests are [checked with CI automation](https://drone.k8s.grechka.family/LostPetInitiative/WebApp).
 
 Built releases are automatically published to [Docker Hub](https://hub.docker.com/repository/docker/lostpetinitiative/kashtanka-web-app) and are ready to use.
