@@ -30,13 +30,21 @@ export function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: Data
         //console.log(`images ${card1ImgNum} ${card2ImgNum}`)
         if(card1ImgNum==undefined || card2ImgNum == undefined)
             return null;
+        if(card1.photos.length <= card1ImgNum)
+            return null;
+        const firstCardPhoto = card1.photos[card1ImgNum];
+        if(card2.photos.length <= card2ImgNum)
+            return null;
+        const sndCardPhoto = card2.photos[card2ImgNum];
         const featuresIdent = _ImageEmbeddingToUse
-        const firstCardFeatures = card1.photos[card1ImgNum].featureVectors[featuresIdent];
-        const secondCardFeatures = card2.photos[card2ImgNum].featureVectors[featuresIdent];
+        const firstCardFeatures = firstCardPhoto.featureVectors[featuresIdent];
+        const secondCardFeatures = sndCardPhoto.featureVectors[featuresIdent];
+        if(!firstCardFeatures || !secondCardFeatures)
+            return null;
 
         const cosSim = Comp.cosSimilarity(firstCardFeatures, secondCardFeatures);
         
-        return <p>{(cosSim*100.0).toFixed(2)}%</p>
+        return (cosSim).toFixed(3);
     }
 
     function getSexWarning() {
@@ -73,6 +81,9 @@ export function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: Data
                 <img className="cardDiffIcons" src={DistanceTimeSVG} alt="Между событиями прошло" title="Между событиями прошло"/>{timeDiffStr}
             </div>
             <div className="cardDiffItems">
+                <img className="cardDiffIcons" src="https://img.icons8.com/color/48/000000/look-alike.png"
+                    alt="Схожесть (чем ближе к 1.0, тем более похоже)"
+                    title="Схожесть (чем ближе к 1.0, тем более похоже)"/>
                 {getFeaturesDiff()}
             </div>
             {/* {getFeaturesDifferences()} */}
