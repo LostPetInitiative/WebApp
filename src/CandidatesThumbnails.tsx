@@ -461,7 +461,7 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
     
     if (props.referenceCard !== null) {        
         return (
-            <div className="page" onWheel={e => this.wheel(e)}>
+            <div className="page" onWheel={wheel}>
                 {/* <div className="title-container"> */}
                 <Stack>
                     <Toggle
