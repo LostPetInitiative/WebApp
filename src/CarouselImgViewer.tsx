@@ -9,29 +9,32 @@ type PropsType = {
 }
 
 export function CarouselImgViewer(props: PropsType) {
-    const total = props.imgSrcArray.length;
     const [selectedIndex, setSelectedIndex] = React.useState(0)
+    const total = props.imgSrcArray.length
 
     React.useEffect(() => {
         props.onImgIdxChange?.(selectedIndex);
     },[props.onImgIdxChange, selectedIndex])
 
-    const selectIndex = (selected : number) => {
-        setSelectedIndex(selected%total);
+    const selectIndex = (i: number) => {
+        if(total>0)
+            setSelectedIndex(i%total)
     }
 
     const decreaseIndex = (total : number) => {
-        setSelectedIndex(prev => (total + prev-1)%total)
+        if(total>0)
+            setSelectedIndex(prev => (total + prev-1)%total)
     }
 
     const increaseIndex = (total : number) => {
-        setSelectedIndex(prev => (total + prev+1)%total)
+        if(total>0)
+            setSelectedIndex(prev => (total + prev+1)%total)
     }
 
     function carouselDots(total : number, selected : number) {
         const dotsArr: JSX.Element[] = [];
         for (let i = 0; i < total; i++) {
-            dotsArr.push(<div className={`carouselDot ${selected !== i ? "" : "carouselSelectedDot"}`} onClick={() => this.selectIndex(total, i)} key={i.toString()}>▢</div>);
+            dotsArr.push(<div className={`carouselDot ${selected !== i ? "" : "carouselSelectedDot"}`} onClick={() => selectIndex(i)} key={i.toString()}>▢</div>);
         }
     
         return (
@@ -41,11 +44,15 @@ export function CarouselImgViewer(props: PropsType) {
   
     
         //const s : React.CSSProperties = {background: "red", width:"100%", height:"100%"}
+
+      const mainImgElement = props.imgSrcArray.length>0 ?
+        (<img alt="Фото животного" src={props.imgSrcArray[selectedIndex].srcUrl} className="carouselImgViewerMainImg"/>) :
+        (<p>Нет фото</p>)
+
       return (
           <div className="carouselImgViewer">
               <div className={`carouselImgViewerMainPhoto ${props.imgSrcArray.length > 1 ? "" : "onePhotoCard"}`}>
-                  <img alt="Фото животного" src={props.imgSrcArray[selectedIndex].srcUrl} className="carouselImgViewerMainImg"/>
-                  {/* <div style={s}></div> */}
+                  {mainImgElement}
               </div>
               <div className={`carouselImgViewer2row ${props.imgSrcArray.length > 1 ? "" : "displayNone"}`}>
                 <div className="carouselImgViewerGoLeft" onClick={() => decreaseIndex(props.imgSrcArray.length)}>⇦</div>
