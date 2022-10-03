@@ -209,7 +209,7 @@ function extractRelevantCards(state: SearchState, referenceCard?: DataModel.Anim
             return state.found;
         case SearchStateEnum.SearchingViaImageFeatures:
             const referenceImageVectors:number[][] = 
-                referenceCard === undefined ? [] :
+                (!referenceCard) ? [] :
                 referenceCard.photos
                     .map(x => (Object.keys(x.featureVectors).some(k => k === _ImageEmbeddingToUse)) ? x.featureVectors[_ImageEmbeddingToUse] : undefined)
                     .filter(x => x != undefined);
