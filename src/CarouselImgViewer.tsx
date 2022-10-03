@@ -10,10 +10,16 @@ type PropsType = {
 
 export function CarouselImgViewer(props: PropsType) {
     const [selectedIndex, setSelectedIndex] = React.useState(0)
+    const total = props.imgSrcArray.length
 
     React.useEffect(() => {
         props.onImgIdxChange?.(selectedIndex);
     },[props.onImgIdxChange, selectedIndex])
+
+    const selectIndex = (i: number) => {
+        if(total>0)
+            setSelectedIndex(i%total)
+    }
 
     const decreaseIndex = (total : number) => {
         if(total>0)
@@ -28,7 +34,7 @@ export function CarouselImgViewer(props: PropsType) {
     function carouselDots(total : number, selected : number) {
         const dotsArr: JSX.Element[] = [];
         for (let i = 0; i < total; i++) {
-            dotsArr.push(<div className={`carouselDot ${selected !== i ? "" : "carouselSelectedDot"}`} onClick={() => this.selectIndex(total, i)} key={i.toString()}>▢</div>);
+            dotsArr.push(<div className={`carouselDot ${selected !== i ? "" : "carouselSelectedDot"}`} onClick={() => selectIndex(i)} key={i.toString()}>▢</div>);
         }
     
         return (
