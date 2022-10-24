@@ -9,7 +9,7 @@ import * as RestCardStorage from "./apiClients/RestApiCardStorage";
 import SolrGatewaySearcher from "./apiClients/SolrGatewaySearch"
 import Landing from "./Landing";
 import LatestCards from "./LatestCardsPreview"
-import Faq from "./Faq"
+import Faq from "./About/Faq"
 import Header from "./Header"
 import MatchesBoard from "./MatchesBoard"
 import Tracker from "./MatomoTracker"
@@ -22,6 +22,9 @@ import {
   useHistory,
   Redirect
 } from "react-router-dom";
+
+import { initializeIcons } from '@fluentui/font-icons-mdl2';
+initializeIcons();
 
 const development = window.location.hostname === "localhost"
 var cardStorageURL: string

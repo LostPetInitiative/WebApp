@@ -1405,6 +1405,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/font-icons-mdl2@npm:^8.5.2":
+  version: 8.5.2
+  resolution: "@fluentui/font-icons-mdl2@npm:8.5.2"
+  dependencies:
+    "@fluentui/set-version": ^8.2.2
+    "@fluentui/style-utilities": ^8.8.1
+    "@fluentui/utilities": ^8.13.2
+    tslib: ^2.1.0
+  checksum: 7b1bf7611105201114f03b4350ed85b20561f80bb379c636dc14e9d02a073aeea4ea44c6d35f982ffc126e150c2d74dcfb829c12d53ba881855876438429e4d7
+  languageName: node
+  linkType: hard
+
 "@fluentui/foundation-legacy@npm:^8.2.17":
   version: 8.2.17
   resolution: "@fluentui/foundation-legacy@npm:8.2.17"
@@ -1547,6 +1559,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/style-utilities@npm:^8.8.1":
+  version: 8.8.1
+  resolution: "@fluentui/style-utilities@npm:8.8.1"
+  dependencies:
+    "@fluentui/merge-styles": ^8.5.3
+    "@fluentui/set-version": ^8.2.2
+    "@fluentui/theme": ^2.6.17
+    "@fluentui/utilities": ^8.13.2
+    "@microsoft/load-themed-styles": ^1.10.26
+    tslib: ^2.1.0
+  checksum: 87ac74eb338644c132a958d0097b081704a0b8f5b96dc89877504de877ad818da7c86a3d057b7d026317d6d62478ee45b7c095e8fe2f22535b907db9a175c552
+  languageName: node
+  linkType: hard
+
 "@fluentui/theme@npm:^2.6.14":
   version: 2.6.14
   resolution: "@fluentui/theme@npm:2.6.14"
@@ -1562,6 +1588,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/theme@npm:^2.6.17":
+  version: 2.6.17
+  resolution: "@fluentui/theme@npm:2.6.17"
+  dependencies:
+    "@fluentui/merge-styles": ^8.5.3
+    "@fluentui/set-version": ^8.2.2
+    "@fluentui/utilities": ^8.13.2
+    tslib: ^2.1.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+  checksum: 26aaa5fdfb7fe759338063af22a909c69881b45a899cc2e283ce7fa3b25d581c38dca053658a8321ab988eefebcdddb6b162f01db5b372864bf376eb5c680028
+  languageName: node
+  linkType: hard
+
 "@fluentui/utilities@npm:^8.12.0":
   version: 8.12.0
   resolution: "@fluentui/utilities@npm:8.12.0"
@@ -1574,6 +1615,21 @@ __metadata:
     "@types/react": ">=16.8.0 <18.0.0"
     react: ">=16.8.0 <18.0.0"
   checksum: 8d57c9dadbba2325b8f8e601867b91a049ff44d859fb8c8879ea3b6071e90c451983e693d0a351e06c9f4e222e55074c997626d2a2a7533fdf8d6b913fe92842
+  languageName: node
+  linkType: hard
+
+"@fluentui/utilities@npm:^8.13.2":
+  version: 8.13.2
+  resolution: "@fluentui/utilities@npm:8.13.2"
+  dependencies:
+    "@fluentui/dom-utilities": ^2.2.2
+    "@fluentui/merge-styles": ^8.5.3
+    "@fluentui/set-version": ^8.2.2
+    tslib: ^2.1.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+  checksum: ed126b660c95a8ec5858e3a554911e15bff2b9579b919aa3db7f78c937295d318822fc4c48626b2c005307f12f4c935668a85e72da26eb0b0c03f9f955eb3867
   languageName: node
   linkType: hard
 
@@ -2145,6 +2201,7 @@ __metadata:
     "@babel/preset-env": ^7.18.10
     "@babel/preset-react": ^7.18.6
     "@babel/preset-typescript": ^7.18.6
+    "@fluentui/font-icons-mdl2": ^8.5.2
     "@fluentui/react": ^8.92.1
     "@types/react": ^18.0.17
     "@types/react-dom": ^18.0.6
