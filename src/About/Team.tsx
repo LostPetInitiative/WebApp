@@ -1,6 +1,8 @@
 import * as React from "react";
-import { IPersonaSharedProps, Persona, PersonaSize, Stack,
+import { Persona, PersonaSize, Stack,
      Facepile, IFacepilePersona, OverflowButtonType, Text, ActionButton } from "@fluentui/react";
+
+    import { useTranslation } from 'react-i18next';
 
 import DmitryPhotoUrl from './img/team/Dmitry.jpg'
 import TeePhotoUrl from './img/team/Tee.jpg'
@@ -8,73 +10,67 @@ import LucyPhotoUrl from './img/team/Lucy.webp'
 import NikolayPhotoUrl from './img/team/Nikolay.webp'
 import VyachecslavPhotoUrl from './img/team/Vyacheslav.webp'
 
-const teamData:IPersonaSharedProps[] = [
-    {
-        text: 'Дмитрий Гречка',
-        imageUrl: DmitryPhotoUrl,
-        secondaryText: 'Архитектор системы, Исследователь, Разработчик',
-        title: "Дмитрий придумал идею системы, спроектировал и воплотил ее в жизнь. Также поддерживает работу системы."
-    },
-    {
-        text: 'Люся Гречка',
-        imageUrl: LucyPhotoUrl,
-        secondaryText: 'Веб-разработчик',
-        title: "Люся разработала значительную часть веб приложения Каштанки."
-    },
-    {
-        text: 'Николай Арефьев',
-        imageUrl: NikolayPhotoUrl,
-        secondaryText: 'Научный руководитель, Исследователь',
-        title: "Николай - научный руководитель студентов и аспирантов, занимающихся применением машинного обучения. Координатор научного взаимодействия в рамках проекта."
-    },
-    {
-        text: 'Zhirui',
-        imageInitials: "ZH",
-        secondaryText: 'Создатель ИИ модели, Исследователь',
-        title: "В рамках работы над магистерской диссертацией Zhirui обучил нейронную сеть на базе Swin Transformer выделять из фотографии головы кошки или собаки вектор признаков, специфичных для каждой особи. Эта модель в данный момент используется в системе."
-    },
-    {
-        text: 'Tee, Yu Shiang',
-        imageUrl: TeePhotoUrl,
-        secondaryText: 'Создатель ИИ модели, Исследователь',
-        title: "В рамках работы над магистерской диссертацией Tee, Yu Shiang обучил модель YoloV5 выделять область головы собак и кошек на фото. Эта модель в данный момент используется в системе."
-    },
-    {
-        text: 'Вячеслав Строев',
-        imageUrl: VyachecslavPhotoUrl,
-        secondaryText: 'Исследователь',
-        title: "В рамках работы над кандидатской диссертацией Вячеслав работает над созданием метрик качества работы системы, а также курирует набор данных для научных исследований."
-    },
-    {
-        // text: 'Мария Елисеева',
-        text: 'Мария',
-        secondaryText: 'Исследователь',
-        title: "В рамках работы над магистерской диссертацией Мария работала над средствами разметки данных, самой разметкой данных для машинного обучения, а также анализом распределения данных."
-    }
-]
+type TeamMember = {
+    i18nKey:string
+    ImageURL? : string
+    sortOrderVal?: number
+}
+
+const teamMembers: TeamMember[] =
+    [
+        {
+            i18nKey: "dmitry",
+            ImageURL: DmitryPhotoUrl,
+        },
+        {
+            i18nKey: "lucy",
+            ImageURL: LucyPhotoUrl
+        },
+        {
+            i18nKey: "nikolay",
+            ImageURL: NikolayPhotoUrl,
+        },
+        {
+            i18nKey: "zhirui"
+        },
+        {
+            i18nKey: "tee",
+            ImageURL: TeePhotoUrl
+        },
+        {
+            i18nKey: "vyacheslav",
+            ImageURL: VyachecslavPhotoUrl
+        },
+        {
+            i18nKey: "maria"
+        }
+];
 
 export function Team() {
-    const shuffledTeamData = React.useMemo(() => {
-        const arr = teamData.slice()
-        arr.sort(()=>Math.random()-0.5) // shuffling
-        return arr
-    },[])
+    const {t} = useTranslation("translation", {keyPrefix:"about.team"});
 
+    const shuffledTeamMembers = React.useMemo(() => {
+        const arr = teamMembers.slice()
+        for(var i=0;i<arr.length;i++)
+            arr[i].sortOrderVal = Math.random()
+        arr.sort((a,b) => a.sortOrderVal - b.sortOrderVal) // shuffling
+        return arr
+    },[teamMembers])
+    
     const [collapsed,setCollapsed] = React.useState(true)
 
     var teamElem : JSX.Element
     if (collapsed) {
 
         const overflowButtonProps = {
-            ariaLabel: 'Еще',
             onClick: (ev: React.MouseEvent<HTMLButtonElement>) => setCollapsed(v => !v),
           };
         
 
-        const personas: IFacepilePersona[] = shuffledTeamData.map(p => {
+        const personas: IFacepilePersona[] = shuffledTeamMembers.map(p => {
             return {
-                personaName: p.text,
-                imageUrl: p.imageUrl,
+                personaName: t(`${p.i18nKey}.name`),
+                imageUrl: p.ImageURL,
                 onClick: (ev: React.MouseEvent<HTMLButtonElement>) => setCollapsed(v => !v),
             }
         });
@@ -87,23 +83,30 @@ export function Team() {
             />
         )
     } else {
-        const personas = shuffledTeamData.map(p => (
-            <Stack styles={{root: {margin: 12}}}>
-                <Persona
-                    {...p}
-                    key={p.text}
-                    size={PersonaSize.size56}
-                />
-                <Text styles={{root:{maxWidth:400, paddingTop:"4px"}}}>{p.title}</Text>
-            </Stack>
-        ))
+        const personas = shuffledTeamMembers.map(p => {
+            const desc = t(`${p.i18nKey}.desc`)
+            return (
+                <Stack styles={{root: {margin: 12}}}>
+                    <Persona
+                        text={t(`${p.i18nKey}.name`)}
+                        imageUrl={p.ImageURL}
+                        secondaryText={t(`${p.i18nKey}.title`)}
+                        title={desc}
+                        key={p.i18nKey}
+                        size={PersonaSize.size56}
+                    />
+                    <Text styles={{root:{maxWidth:400, paddingTop:"4px"}}}>{desc}</Text>
+                </Stack>
+            )
+            }
+        )
 
         teamElem = (
             <>
             <Stack tokens={{ childrenGap: 0, padding: 4}} horizontal wrap>
                     {personas}
             </Stack>
-            <ActionButton iconProps={{iconName:"BackToWindow"}} text="Свернуть команду" onClick={ev => {setCollapsed(v => !v) }} />
+            <ActionButton iconProps={{iconName:"BackToWindow"}} text={t("collapseTeam")} onClick={ev => {setCollapsed(v => !v) }} />
             </>
         )
     }

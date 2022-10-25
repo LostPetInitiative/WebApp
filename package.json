@@ -32,9 +32,12 @@
   "dependencies": {
     "@fluentui/font-icons-mdl2": "^8.5.2",
     "@fluentui/react": "^8.92.1",
+    "i18next": "^22.0.2",
+    "i18next-browser-languagedetector": "^6.1.8",
     "immutable": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^12.0.0",
     "react-router-dom": "5.3.3"
   }
 }

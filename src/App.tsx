@@ -106,35 +106,39 @@ import CompareAbPale from './img/menus/compare_ab_pale.png'
 
 import QuestionsOrange from './img/menus/questions_orange.png'
 import QuestionsPale from './img/menus/questions_pale.png'
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 function Menu() {
 
   return (
-    <div id="appStateMenu">
-      <div id="headerCornerDiv">
-        <NavLink to="/">
-          <img id="headerLogo" alt="Логотип Каштанки" src={KashtankaLogo}></img>
+    <div id="leftColumnMenu">
+      <div id="appStateMenu">
+        <div id="headerCornerDiv">
+          <NavLink to="/">
+            <img id="headerLogo" alt="Логотип Каштанки" src={KashtankaLogo}></img>
+          </NavLink>
+        </div>
+        <NavLink to="/board" activeClassName="activePage">
+          <div className="menuItem">
+            <img alt='Доска карточек' className="active" src={TrelloLogoOrange} />
+            <img alt='Доска картоек' className="inactive" src={TrelloLogoPale} />
+          </div>
         </NavLink>
-      </div>
-      <NavLink to="/board" activeClassName="activePage">
-        <div className="menuItem">
-          <img alt='Доска карточек' className="active" src={TrelloLogoOrange} />
-          <img alt='Доска картоек' className="inactive" src={TrelloLogoPale} />
-        </div>
-      </NavLink>
-      <NavLink to="/candidatesReview/" activeClassName="activePage" title="Сравнение объявлений">
-        <div className="menuItem">
-          <img alt='Сравнение объявлений' className="active" src={CompareAbOrange} />
-          <img alt='Сравнение объявлений' className="inactive" src={CompareAbPale} />
-        </div>
-      </NavLink>
-      <NavLink to="/faq" activeClassName="activePage" title="Вопросы и ответы">
-        <div className="menuItem">
-          <img alt='Вопросы и ответы' className="active" src={QuestionsOrange} />
-          <img alt='Вопросы и ответы' className="inactive" src={QuestionsPale} />
-        </div>
-      </NavLink>
-    </div >
+        <NavLink to="/candidatesReview/" activeClassName="activePage" title="Сравнение объявлений">
+          <div className="menuItem">
+            <img alt='Сравнение объявлений' className="active" src={CompareAbOrange} />
+            <img alt='Сравнение объявлений' className="inactive" src={CompareAbPale} />
+          </div>
+        </NavLink>
+        <NavLink to="/faq" activeClassName="activePage" title="Вопросы и ответы">
+          <div className="menuItem">
+            <img alt='Вопросы и ответы' className="active" src={QuestionsOrange} />
+            <img alt='Вопросы и ответы' className="inactive" src={QuestionsPale} />
+          </div>
+        </NavLink>
+      </div >
+      <LanguageSwitcher />
+    </div>
   )
 }
 

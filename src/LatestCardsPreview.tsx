@@ -3,6 +3,7 @@ import * as ISearch from "./apiClients/ISearch"
 import { AnimalCardThumbnailById } from "./CandidatesThumbnails"
 import * as ICardsStorage from "./apiClients/ICardStorage"
 import "./LatestCardsPreview.scss"
+import { useTranslation } from "react-i18next"
 
 type PropsType = {
     cardsToShow: number,
@@ -12,67 +13,45 @@ type PropsType = {
     previewClicked: (clickedFullID: string) => void,
 }
 
-type StateType = {
-    foundCards: ISearch.FoundDoc[] | null,
-    currentlyShownType: ISearch.LatestCardSearchType,
-    currentlyShownCount: number
-}
 
-class LatestCardsPreview extends React.Component<PropsType, StateType> {
-    constructor(props: PropsType) {
-        super(props)
+function LatestCardsPreview(props: PropsType)  {
+    const {cardsToShow, cardsTypeToShow, searcher} = props
+    const [foundCards, setFoundCards] = React.useState<ISearch.FoundDoc[] | null>(null)
 
-        this.state = {
-            foundCards: null,
-            currentlyShownType: props.cardsTypeToShow,
-            currentlyShownCount: NaN // nan will cause initial shown!=requested mismatch, triggering initial load
-        }
+    const {t} = useTranslation("translation",{ keyPrefix:"cards.latestCardsPreview"})
+    
+    React.useEffect(() => {
+        console.log("Loading " + cardsTypeToShow + " (" + cardsToShow + " max count) latest cards")
+        setFoundCards(null)
+        searcher.GetLatestCards(cardsToShow,cardsTypeToShow).then(cards => {
+            console.log("Loaded " + cards.length + " of " + props.cardsTypeToShow + " (" + props.cardsToShow + " max count) latest cards")
+            setFoundCards(cards)
+        }, err => {
+            console.error(`Failed to load cards: ${err}`)
+            setFoundCards([])
+        });
+    },[cardsToShow, cardsTypeToShow, searcher])
+
+    
+    const handleThumbnailClick = (fullID: string, e: (React.MouseEvent | null)) => {
+        props.previewClicked?.(fullID)
     }
 
-    tryFetchCards() {
-        if ((this.state.currentlyShownCount !== this.props.cardsToShow) ||
-            ((this.state.currentlyShownType !== this.props.cardsTypeToShow))) {
-            console.log("Loading " + this.props.cardsTypeToShow + " (" + this.props.cardsToShow + " max count) latest cards")
-            this.setState({
-                currentlyShownCount: this.props.cardsToShow,
-                currentlyShownType: this.props.cardsTypeToShow
-            });
-            this.props.searcher.GetLatestCards(this.props.cardsToShow, this.props.cardsTypeToShow).then(cards => {
-                console.log("Loaded " + cards.length + " of " + this.props.cardsTypeToShow + " (" + this.props.cardsToShow + " max count) latest cards")
-                this.setState({
-                    foundCards: cards
-                });
-            });
-        }
-    }
-
-    componentDidMount() {
-        this.tryFetchCards()
-    }
-
-    componentDidUpdate() {
-        this.tryFetchCards()
-    }
-
-    handleThumbnailClick(fullID: string, e: (React.MouseEvent | null)) {
-        if (this.props.previewClicked !== null) {
-            this.props.previewClicked(fullID)
-        }
-    }
-
-    renderContent() {
-        if (this.state.foundCards === null) {
-            return <p>Загружаю самые свежие объявления...</p>
+    const renderContent = () => {
+        if (foundCards === null) {
+            const downloadingLatestCardsLocalizedStr = t("downloadingLatestCards")
+            return <p>{downloadingLatestCardsLocalizedStr}</p>
         } else {
-            if (this.state.foundCards.length === 0) {
-                return <p>Не удалось загрузить свежие объявления</p>
+            if (foundCards.length === 0) {
+                const downloadFailedLocalizedStr = t("downloadFailed")
+                return <p>{downloadFailedLocalizedStr}</p>
             } else {
                 const cardToViewer = (card: ISearch.FoundDoc, idx: number, array: ISearch.FoundDoc[]) => {
                     const fullID = card.namespace + "/" + card.id
                     return (
-                        <div onClick={(e) => this.handleThumbnailClick(fullID, e)} key={fullID}>
+                        <div onClick={(e) => handleThumbnailClick(fullID, e)} key={fullID}>
                             <AnimalCardThumbnailById
-                                cardStorage={this.props.cardStorage}
+                                cardStorage={props.cardStorage}
                                 refCard={null}
                                 isAccented={false}
                                 namespace={card.namespace}
@@ -82,10 +61,11 @@ class LatestCardsPreview extends React.Component<PropsType, StateType> {
                     )
                 }
 
-                const cards = this.state.foundCards.map(cardToViewer)
+                const cards = foundCards.map(cardToViewer)
+                const downloadedLatestCardsLocalizedStr = t("downloadedLatestCards")
                 return (
                         <div>
-                            <p>Свежие объявления, обработанные системой:</p>
+                            <p>{downloadedLatestCardsLocalizedStr}</p>
                             <div className="thumbnails-container">
                                 {cards}
                             </div>
@@ -95,14 +75,14 @@ class LatestCardsPreview extends React.Component<PropsType, StateType> {
         }
     }
 
-    render() {
-        const content = this.renderContent()
-        return (
-            <div className="latest-cards-previews-container">
-            {content}
-            </div>
-        )
-    }
+
+    const content = renderContent()
+    return (
+        <div className="latest-cards-previews-container">
+        {content}
+        </div>
+    )
+
 }
 
 export default LatestCardsPreview;
