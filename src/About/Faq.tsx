@@ -1,8 +1,11 @@
 import * as React from "react";
-import Header from "./Header"
+import Header from "../Header"
 import "./Faq.scss"
+import {Team} from"./Team"
 
 const mailToElement = <a href='mailto:contact@kashtanka.pet'>contact@kashtanka.pet</a>;
+
+
 
 function Faq(props : {}) {
     React.useEffect(() => {
@@ -13,11 +16,13 @@ function Faq(props : {}) {
         <div className="faq-page">
             <Header />
             <div className="faq-text">
+                <h2>Команда Каштанки</h2>
+                <Team />
 
                 <h2>Я потерял/нашёл домашнее животное. Чем мне может помочь Каштанка?</h2>
                 <p className="answer">Каштанка ищет животных среди фотографий из объявлений с подключённых ресурсов.
                 Опубликуйте ваше объявление о потере/находке на одном из дружественных сайтов, например,
-                на <a href='https://pet911.ru' target="_BLANK" rel="external">pet911.ru</a>, и объявление будет автоматически обработано Каштанкой.</p>
+                на <a href='https://pet911.ru' target="_BLANK" rel="external">pet911.ru</a> или <a href='https://poiskzoo.ru' target="_BLANK" rel="external">poiskzoo.ru</a>, и объявление будет автоматически обработано Каштанкой.</p>
                 
                 <h2>С какими животными работает система</h2>
                 <p className="answer">Сейчас поддерживаются только кошки и собаки.</p>

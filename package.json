@@ -30,6 +30,7 @@
     "start": "webpack serve --open --config webpack.dev.js"
   },
   "dependencies": {
+    "@fluentui/font-icons-mdl2": "^8.5.2",
     "@fluentui/react": "^8.92.1",
     "immutable": "^4.1.0",
     "react": "^18.2.0",
