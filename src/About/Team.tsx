@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IPersonaSharedProps, Persona, PersonaSize, Stack,
+import { Persona, PersonaSize, Stack,
      Facepile, IFacepilePersona, OverflowButtonType, Text, ActionButton } from "@fluentui/react";
 
     import { useTranslation } from 'react-i18next';
@@ -33,25 +33,17 @@ const teamMembers: TeamMember[] =
         {
             i18nKey: "zhirui"
         },
-        // 
-        // {
-        //     Name: 'Tee, Yu Shiang',
-        //     imageUrl: TeePhotoUrl,
-        //     secondaryText: 'Создатель ИИ модели, Исследователь',
-        //     title: "В рамках работы над магистерской диссертацией Tee, Yu Shiang обучил модель YoloV5 выделять область головы собак и кошек на фото. Эта модель в данный момент используется в системе."
-        // },
-        // {
-        //     Name: 'Вячеслав Строев',
-        //     imageUrl: VyachecslavPhotoUrl,
-        //     secondaryText: 'Исследователь',
-        //     title: "В рамках работы над кандидатской диссертацией Вячеслав работает над созданием метрик качества работы системы, а также курирует набор данных для научных исследований."
-        // },
-        // {
-        //     // text: 'Мария Елисеева',
-        //     Name: 'Мария',
-        //     secondaryText: 'Исследователь',
-        //     title: "В рамках работы над магистерской диссертацией Мария работала над средствами разметки данных, самой разметкой данных для машинного обучения, а также анализом распределения данных."
-        // }
+        {
+            i18nKey: "tee",
+            ImageURL: TeePhotoUrl
+        },
+        {
+            i18nKey: "vyacheslav",
+            ImageURL: VyachecslavPhotoUrl
+        },
+        {
+            i18nKey: "maria"
+        }
 ];
 
 export function Team() {
@@ -71,7 +63,6 @@ export function Team() {
     if (collapsed) {
 
         const overflowButtonProps = {
-            ariaLabel: 'Еще',
             onClick: (ev: React.MouseEvent<HTMLButtonElement>) => setCollapsed(v => !v),
           };
         

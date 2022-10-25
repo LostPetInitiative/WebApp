@@ -6,6 +6,9 @@ export const resources = {
     ru: {
         translation: {
             about:{
+                qILostOrFoundPet: "Я потерял/нашёл домашнее животное. Чем мне может помочь Каштанка?",
+                aILostOrFoundPet: "Каштанка ищет животных среди фотографий из объявлений с подключённых ресурсов. Опубликуйте ваше объявление о потере/находке на одном из дружественных сайтов, например, на {{pet911ru_link}} или {{poiskzoo_link}}, и объявление будет автоматически обработано Каштанкой.",
+                kashtankaTeam: "Команда Каштанки",
                 team: {
                     dmitry: {
                       name: 'Дмитрий Гречка',
@@ -27,6 +30,22 @@ export const resources = {
                       title: 'Создатель ИИ модели, Исследователь',
                       desc: "В рамках работы над магистерской диссертацией Zhirui обучил нейронную сеть на базе Swin Transformer выделять из фотографии головы кошки или собаки вектор признаков, специфичных для каждой особи. Эта модель в данный момент используется в системе."
                     },
+                    tee: {          
+                      name: 'Tee, Yu Shiang',
+                      title: 'Создатель ИИ модели, Исследователь',
+                      desc: "В рамках работы над магистерской диссертацией Tee, Yu Shiang обучил модель YoloV5 выделять область головы собак и кошек на фото. Эта модель в данный момент используется в системе."
+                    },
+                    vyacheslav: {
+                        name: 'Вячеслав Строев',
+                        title: 'Исследователь',
+                        desc: "В рамках работы над кандидатской диссертацией Вячеслав подготовил набор данных для обучения и оценки качества моделей поиска животных. Создал конкурс лучших моделей. Обучил модели поиска животных, основанные на BLIP"
+                    },
+                    maria: {
+                      // name: 'Мария Елисеева',
+                      name: 'Мария',
+                      title: 'Исследователь',
+                      desc: "В рамках работы над магистерской диссертацией Мария работала над средствами разметки данных, самой разметкой данных для машинного обучения, а также анализом распределения данных."
+                    }
                 }
             }
         }
@@ -34,11 +53,12 @@ export const resources = {
       en: {
         translation: {
             about:{
+                kashtankaTeam: "Kashtanka team",
                 team: {
                   dmitry: {
                     name: 'Dmitry Grechka',
                     title: 'System architect, Researcher, Developer',
-                    desc: "Dmitry conceived the system, designed and built it. He is also maintaining the system."
+                    desc: "Dmitry conceived the system, designed and built it. He also maintains the system."
                   },
                   lucy: {
                     name: "Lucy Grechka",
@@ -53,12 +73,28 @@ export const resources = {
                   zhirui: {
                     name: 'Zhirui',
                     title: 'AI model creator, Researcher',
-                    desc: "During his masters thesis preparation, Zhirui trained the Swin Transformer based neural network model to extract unique pet identity visual features based. The model is used in the production system right now."
+                    desc: "During the masters thesis preparation, Zhirui trained the Swin Transformer based neural network model to extract unique pet identity visual features based. The model is used in the production system right now."
                   },
-                }
+                  tee: {          
+                    name: 'Tee, Yu Shiang',
+                    title: 'AI model creator, Researcher',
+                    desc: "During the masters thesis preparation Tee, Yu Shiang trained the YoloV5 Nueral Network model to extract the bounding box of cat and dog heads on photos. The model is used in the production system right now."
+                  },
+                  vyacheslav: {
+                    name: 'Vyacheslav Stroev',
+                    title: 'Researcher',
+                    desc: "During the PhD thesis perparation Vyacheslav created a dataset for training and evaluation of pet retrieval models. Created evaluation scripts and the leaderboard. Trained BLIP-based models of pet retrieval."
+                  },
+                  maria: {
+                    // name: 'Мария Елисеева',
+                    name: 'Maria',
+                    title: 'Researcher',
+                    desc: "During the masters thesis preparation Maria created data annotation process, annotated the data for machine learning, as well as did data analysis."
+                  }
             },
         }
       }
+    }
 } as const;
 
 
