@@ -5,11 +5,13 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 export const resources = {
     ru: {
         translation: {
+            kashtanka: "Каштанка",
+            title: "Каштанка - автоматический поиск потерянных и найденных домашних животных",
             about:{
-                qILostOrFoundPet: "Я потерял/нашёл домашнее животное. Чем мне может помочь Каштанка?",
-                aILostOrFoundPet: "Каштанка ищет животных среди фотографий из объявлений с подключённых ресурсов. Опубликуйте ваше объявление о потере/находке на одном из дружественных сайтов, например, на {{pet911ru_link}} или {{poiskzoo_link}}, и объявление будет автоматически обработано Каштанкой.",
+                section: "Вопросы и ответы",
                 kashtankaTeam: "Команда Каштанки",
                 team: {
+                    collapseTeam: "Свернуть команду",
                     dmitry: {
                       name: 'Дмитрий Гречка',
                       title: 'Архитектор системы, Исследователь, Разработчик',
@@ -52,9 +54,13 @@ export const resources = {
       },
       en: {
         translation: {
+            kashtanka: "Kashtanka",
+            title: "Kashtanka - AI powered search of lost and found pets",
             about:{
+                section: "Questions & Answers",
                 kashtankaTeam: "Kashtanka team",
                 team: {
+                  collapseTeam: "Collapse the team",
                   dmitry: {
                     name: 'Dmitry Grechka',
                     title: 'System architect, Researcher, Developer',

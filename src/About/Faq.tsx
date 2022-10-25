@@ -213,12 +213,13 @@ const englishQnA = (
 );
 
 function Faq(props: {}) {
+  const { t:tGen, i18n } = useTranslation("translation");
+  const { t } = useTranslation("translation", { keyPrefix: "about" });
+
   React.useEffect(() => {
-    document.title =
-      "Каштанка - автоматический поиск потерянных и найденных домашних животных - Вопросы и ответы";
+    document.title = tGen("title") + ' - '+t('section')
   });
 
-  const { t, i18n } = useTranslation("translation", { keyPrefix: "about" });
   const kashtankaTeamStr = t("kashtankaTeam");
 
   // TODO: can we ensure that the compoent is rerendered upon language change?

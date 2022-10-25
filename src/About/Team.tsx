@@ -106,7 +106,7 @@ export function Team() {
             <Stack tokens={{ childrenGap: 0, padding: 4}} horizontal wrap>
                     {personas}
             </Stack>
-            <ActionButton iconProps={{iconName:"BackToWindow"}} text="Свернуть команду" onClick={ev => {setCollapsed(v => !v) }} />
+            <ActionButton iconProps={{iconName:"BackToWindow"}} text={t("collapseTeam")} onClick={ev => {setCollapsed(v => !v) }} />
             </>
         )
     }
