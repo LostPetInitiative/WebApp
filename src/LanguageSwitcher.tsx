@@ -2,9 +2,12 @@ import { DefaultButton, Dropdown, IconButton, IContextualMenuProps, IDropdownOpt
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
-const languageOptions: {key:string, text:string}[] = [
-        { key: 'ru', text: '🇷🇺' },
-        { key: 'en', text: '🇬🇧' },
+import enSVG from './img/lang/en.svg'
+import ruSVG from './img/lang/ru.svg'
+
+const languageOptions: {key:string, imgSrc:string}[] = [
+        { key: 'ru', imgSrc: ruSVG },
+        { key: 'en', imgSrc: enSVG },
     ];
 
 
@@ -25,6 +28,6 @@ export function LanguageSwitcher() {
 
 
     return (
-        <p style={{textAlign: "center", cursor: "pointer"}} title={"Switch language"} onClick={() => {setLang(languageOptions[(curLangIdx+1)%languageOptions.length].key)}}>{curLangMeta.text}</p>
+        <img style={{textAlign: "center", cursor: "pointer", alignSelf:"center", width:"50%", margin:"8px"}} title={"Switch language"} src={curLangMeta.imgSrc} onClick={() => {setLang(languageOptions[(curLangIdx+1)%languageOptions.length].key)}} />
     )
 }

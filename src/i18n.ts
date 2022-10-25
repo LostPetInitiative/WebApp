@@ -7,6 +7,13 @@ export const resources = {
         translation: {
             kashtanka: "Каштанка",
             title: "Каштанка - автоматический поиск потерянных и найденных домашних животных",
+            cards: {
+              latestCardsPreview: {
+                downloadingLatestCards: "Загружаю самые свежие объявления...",
+                downloadFailed: "Не удалось загрузить свежие объявления",
+                downloadedLatestCards: "Свежие объявления, обработанные системой:"
+              }
+            },
             about:{
                 section: "Вопросы и ответы",
                 kashtankaTeam: "Команда Каштанки",
@@ -56,6 +63,13 @@ export const resources = {
         translation: {
             kashtanka: "Kashtanka",
             title: "Kashtanka - AI powered search of lost and found pets",
+            cards: {
+              latestCardsPreview: {
+                downloadingLatestCards: "Downloading latest cards...",
+                downloadFailed: "Failed to get latest cards",
+                downloadedLatestCards: "Latest cards processed by Kashtanka:"
+              }
+            },
             about:{
                 section: "Questions & Answers",
                 kashtankaTeam: "Kashtanka team",
