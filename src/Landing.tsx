@@ -47,17 +47,17 @@ const enText = (
     <h2>How does it work</h2>
     <ol>
       <li>
-        Kashtanka web crawlers constantly monitors the dedicated web sites for the 
+        Kashtanka web crawlers constantly monitor dedicated web sites for 
         new messages about lost or found pets.
       </li>
       <li>
-        Upon crawling of new message, AI system looks through hundreds of thousands messages already stored in the system
-        in order to find whether someone posted a message about exactly the same pet previously.
+        Upon crawling of a new message, AI system looks through hundreds of thousands of messages already stored in the system
+        in order to find whether someone previously posted a message about exactly the same pet.
       </li>
       <li>
-        The pairs of messages (lost/found) which seem to be describing the same pate
+        The pairs of messages (lost/found) which seem to be describing the same pat
         are added to the {" "}
-        <NavLink to="/board">matches card board</NavLink> so the human volunteers can verify them.
+        <NavLink to="/board">match card board</NavLink> so human volunteers can verify them.
       </li>
       <li>
         The volunteers verify whether the pet is indeed the same on both lost and found messages.
@@ -65,8 +65,8 @@ const enText = (
       </li>
     </ol>
     <p>
-      Help the pets to return to their homes!
-      Check the possible matches by pressing the cards bellow.
+      Help pets to return to their homes!
+      Check the possible matches by pressing the cards below.
     </p>
   </div>
 );

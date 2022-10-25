@@ -12,9 +12,11 @@ const languageOptions: {key:string, imgSrc:string}[] = [
 
 
 export function LanguageSwitcher() {
-    const {i18n} = useTranslation()
+    const {t, i18n} = useTranslation()
+
+    const dummy = t("kashtanka") // this re-renderes the switcher if the language changes
     
-    const [lang,setLang] = React.useState(() => i18n.language)
+    const [lang,setLang] = React.useState(() => i18n.resolvedLanguage)
 
     var curLangIdx = languageOptions.findIndex((e => e.key == lang))
     if (curLangIdx == -1)
@@ -22,9 +24,9 @@ export function LanguageSwitcher() {
     const curLangMeta = languageOptions[curLangIdx] 
 
     React.useEffect(() => {
-        if (lang != i18n.language)
+        if (lang != i18n.resolvedLanguage)
             i18n.changeLanguage(lang)
-    },[lang])
+    },[lang,dummy])
 
 
     return (

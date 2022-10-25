@@ -136,11 +136,11 @@ const englishQnA = (
     <p className="answer">
       Kashtaka does a pet search among photos published on connected message
       boards. Publish your new message about lost/found pet at one of our
-      partner web sites (e.g. {pet911ru_link} or {poiskzoo_link}), then your
+      partner web sites (e.g. {pet911ru_link} or {poiskzoo_link}), your
       message will be automatically processed by Kashtanka.
     </p>
 
-    <h2>Which pet species the Kashtanka supports?</h2>
+    <h2>Which pet species does the Kashtanka support?</h2>
     <p className="answer">Now only cats and dogs are supported.</p>
 
     <h2>How can I help the project?</h2>
@@ -148,28 +148,28 @@ const englishQnA = (
       The project needs computational power (computers) and volunteers.
       <br />
       You can join the team as volumteer and check the matches that Kashtanka
-      proposes, reach pet owners upon matches.
+      proposes, reach pet owners upon match verification.
       <br />
       If you want to help by computational resources, reach us by{" "}
       {mailToElement} email, we can instruct you how rent virtual PC and donate
       it to the project.
     </p>
 
-    <h2>How a volunteer works with the website?</h2>
+    <h2>How does the volunteer work with the website?</h2>
     <p className="answer">
-      The volunteers have access to the
+      The volunteers have access to the{" "}
       <a href="#/board">match card board</a>. By using the cards we track which
       volunteer works with particular lost/found message. Also we know which
       cards are already evaluated by human and which matches still need human
-      attention. If you want to get write access to the card board write us at{" "}
+      attention. If you want to get access to the card board write us at{" "}
       {mailToElement}
     </p>
 
     <h2>How the system looks for the similar pets?</h2>
     <p>
       Kashtanka uses neural networks to extract distinctive visual features
-      (color, shape, body/head proportions, etc.) of individual pets Pets which
-      posses similar visual features are considered similar.
+      (color, shape, body/head proportions, etc.) of individual pets. Pets which
+      possess similar visual features are considered the same.
       <br />
       The proximity in space and time between lost and found events is also
       accounted during the search.
@@ -186,7 +186,7 @@ const englishQnA = (
 
     <h2>I found a bug or I have a suggestions.</h2>
     <p className="answer">
-      Create an issua at{" "}
+      Create an issue at{" "}
       <a href="https://github.com/LostPetInitiative/Kashtanka/issues">
         project development portal
       </a>{" "}
@@ -195,7 +195,7 @@ const englishQnA = (
 
     <h2>How much data is processed by the system?</h2>
     <p>
-      Currently the system is aware of hundreds thiusands messages about lost
+      Currently the system is aware of hundreds of thousands messages about lost
       and found pets.
       <br />
       We use state of the art Artificial intelligence (AI) and Big Data

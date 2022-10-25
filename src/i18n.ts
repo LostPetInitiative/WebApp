@@ -88,17 +88,17 @@ export const resources = {
                   nikolay: {
                       name: "Nikolay Arefyev",
                       title: "Scientific advisor, Researcher",
-                      desc: "Nikolay is a scientific advisor of the master and PhD students involved in the project. Organizes research talks and curates research directions."
+                      desc: "Nikolay is a scientific advisor of master and PhD students involved in the project. Organizes research talks and curates research directions."
                   },
                   zhirui: {
                     name: 'Zhirui',
                     title: 'AI model creator, Researcher',
-                    desc: "During the masters thesis preparation, Zhirui trained the Swin Transformer based neural network model to extract unique pet identity visual features based. The model is used in the production system right now."
+                    desc: "During the masters thesis preparation, Zhirui trained a Swin Transformer based neural network model to extract unique pet identity visual features. The model is used in the production system now."
                   },
                   tee: {          
                     name: 'Tee, Yu Shiang',
                     title: 'AI model creator, Researcher',
-                    desc: "During the masters thesis preparation Tee, Yu Shiang trained the YoloV5 Nueral Network model to extract the bounding box of cat and dog heads on photos. The model is used in the production system right now."
+                    desc: "During the masters thesis preparation Tee, Yu Shiang trained the YoloV5 Nueral Network model to extract a bounding box of cat and dog heads from photos. The model is used in the production system now."
                   },
                   vyacheslav: {
                     name: 'Vyacheslav Stroev',
@@ -109,7 +109,7 @@ export const resources = {
                     // name: 'Мария Елисеева',
                     name: 'Maria',
                     title: 'Researcher',
-                    desc: "During the masters thesis preparation Maria created data annotation process, annotated the data for machine learning, as well as did data analysis."
+                    desc: "During the masters thesis preparation Maria created data annotation process, annotated the data for machine learning and carried out data analysis."
                   }
             },
         }
