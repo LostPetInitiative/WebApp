@@ -9,6 +9,7 @@ steps:
   commands:
   - yarn
   - yarn build
+  - yarn test
 - name: build & push docker image (main branch)
   image: plugins/docker
   when:

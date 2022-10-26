@@ -7,6 +7,39 @@ export const resources = {
         translation: {
             kashtanka: "Каштанка",
             title: "Каштанка - автоматический поиск потерянных и найденных домашних животных",
+            common: {
+              loading:"Загрузка...",
+              distance: "Расстояние",
+              animal: "Животное",
+              lost: "Потерялся",
+              found: "Нашелся",
+              male: "Мальчик",
+              female: "Девочка",
+              comment: "Комментарий",
+              when: "Когда?",
+              where: "Где?",
+              cardNotFound: "Карточка не найдена",
+              error: "Ошибка",
+              noPhoto: "Нет фото"
+            },
+            cardViewer: {
+              goToOrig: "Перейти к объявлению",
+              failedToDownloadCard: "Не удалось загрузить карточку",
+            },
+            candidatesReview: {
+              section: "Сравнение объявлений",
+              cardNotSelectedSelectBelow: "Карточка не выбрана. Выберите карточку из списка снизу",
+              lookingForMatches: "Поиск совпадений...",
+              possibleMatches: "Возможные совпадения:",
+              lookingForMostRecentFound: "Поиск самого свежего объявления о находке животного..."
+            },
+            diffViewer: {
+              differentSexWarning: "Животные, предположительно, разного пола!",
+              differentSpeciesWarning: "Животные разного вида!",
+              LostAfterFoundWarning: "Время находки предшествует времени пропажи!",
+              timeDifference: "Между событиями прошло",
+              similarity: "Схожесть (чем ближе к 1.0, тем более похоже)"
+            },
             cards: {
               latestCardsPreview: {
                 downloadingLatestCards: "Загружаю самые свежие объявления...",
@@ -32,7 +65,7 @@ export const resources = {
                     nikolay: {
                         name: "Николай Арефьев",
                         title: "Научный руководитель, Исследователь",
-                        desc: "Николай - научный руководитель студентов и аспирантов, занимающихся применением машинного обучения. Координатор научного взаимодействия в рамках проекта."
+                        desc: "Николай - научный руководитель студентов и аспирантов, занимающихся применением машинного обучения, координатор научного взаимодействия в рамках проекта. Николай и Вячеслав подготовили набор данных для обучения и оценки качества моделей поиска животных, создали online конкурс лучших моделей"
                     },
                     zhirui: {
                       name: 'Zhirui',
@@ -47,11 +80,10 @@ export const resources = {
                     vyacheslav: {
                         name: 'Вячеслав Строев',
                         title: 'Исследователь',
-                        desc: "В рамках работы над кандидатской диссертацией Вячеслав подготовил набор данных для обучения и оценки качества моделей поиска животных. Создал конкурс лучших моделей. Обучил модели поиска животных, основанные на BLIP"
+                        desc: "В рамках работы над кандидатской диссертацией Вячеслав подготовил набор данных для обучения и оценки качества моделей поиска животных. Создал online конкурс лучших моделей. Обучил модели поиска животных, основанные на BLIP"
                     },
                     maria: {
-                      // name: 'Мария Елисеева',
-                      name: 'Мария',
+                      name: 'Мария Елисеева',
                       title: 'Исследователь',
                       desc: "В рамках работы над магистерской диссертацией Мария работала над средствами разметки данных, самой разметкой данных для машинного обучения, а также анализом распределения данных."
                     }
@@ -63,9 +95,42 @@ export const resources = {
         translation: {
             kashtanka: "Kashtanka",
             title: "Kashtanka - AI powered search of lost and found pets",
+            common: {
+              loading:"Loading...",
+              distance: "Distance",
+              animal: "Animal",
+              lost: "Lost",
+              found: "Found",
+              male: "Boy",
+              female: "Girl",
+              comment: "Comment",
+              when: "When?",
+              where: "Where?",
+              cardNotFound: "Card not found",
+              error: "Error",
+              noPhoto: "No photo"
+            },
+            cardViewer: {
+              goToOrig: "Open orig message",
+              failedToDownloadCard: "Failed to load the card"
+            },
+            candidatesReview: {
+              section: "Cards comparison",
+              cardNotSelectedSelectBelow: "Card is not selected. Select a card below",
+              lookingForMatches: "Looking for matches...",
+              possibleMatches: "Possible matches:",
+              lookingForMostRecentFound: "Looking for the most recent \"found\" card..."
+            },
+            diffViewer: {
+              differentSexWarning: "The animals are of different sex!",
+              differentSpeciesWarning: "The animals are of different species!",
+              LostAfterFoundWarning: "Found event precedes the lost event!",
+              timeDifference: "Time between the events",
+              similarity: "Similarity (more closer to 1.0 is more similar)"
+            },
             cards: {
               latestCardsPreview: {
-                downloadingLatestCards: "Downloading latest cards...",
+                downloadingLatestCards: "Loading latest cards...",
                 downloadFailed: "Failed to get latest cards",
                 downloadedLatestCards: "Latest cards processed by Kashtanka:"
               }
@@ -88,7 +153,7 @@ export const resources = {
                   nikolay: {
                       name: "Nikolay Arefyev",
                       title: "Scientific advisor, Researcher",
-                      desc: "Nikolay is a scientific advisor of master and PhD students involved in the project. Organizes research talks and curates research directions."
+                      desc: "Nikolay is a scientific advisor of master and PhD students involved in the project. Organizes research talks and curates research directions. Nikolay & Vyacheslav created a dataset for training and evaluation of pet retrieval models. They also created evaluation scripts and the leaderboard."
                   },
                   zhirui: {
                     name: 'Zhirui',
@@ -106,10 +171,9 @@ export const resources = {
                     desc: "During the PhD thesis perparation Vyacheslav created a dataset for training and evaluation of pet retrieval models. Created evaluation scripts and the leaderboard. Trained BLIP-based models of pet retrieval."
                   },
                   maria: {
-                    // name: 'Мария Елисеева',
-                    name: 'Maria',
+                    name: 'Maria Eliseeva',
                     title: 'Researcher',
-                    desc: "During the masters thesis preparation Maria created data annotation process, annotated the data for machine learning and carried out data analysis."
+                    desc: "During the masters thesis preparation Maria organized data annotation process, annotated data for machine learning and carried out data analysis."
                   }
             },
         }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as DataModel from './DataModel'
+import * as DataModel from '../DataModel'
 import './AnimalPhotos.scss'
 
 function AnimalPhotos(props: {photos: DataModel.AnimalPhoto[], selectedInd: number}) {

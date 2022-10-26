@@ -1,10 +1,13 @@
 import * as React from "react";
 import "./AnimalCard.scss"
-import * as DataModel from "./DataModel";
+import * as DataModel from "../DataModel";
 import {CarouselImgViewer} from "./CarouselImgViewer";
+import { useTranslation } from "react-i18next";
 
 function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:number) => void; }) {
     const card = props.card;
+
+    const {t} = useTranslation()
 
     function animalType(animalType: DataModel.Animal, animalGender: DataModel.Sex) {
         if (animalType === DataModel.Animal.Dog) {
@@ -21,22 +24,22 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
                 return <div className="iconAnimal iconCatM" />;
             return <div className="iconAnimal iconCat" />;
         }
-        else return "Животное";
+        else return t("common.animal");
     }
 
     function animalGenderString(animalGender: DataModel.Sex) {
         if (animalGender === DataModel.Sex.Female)
-            return "Девочка";
+            return t("common.female");
         else if (animalGender === DataModel.Sex.Male)
-            return "Мальчик";
+            return t("common.male");
         else return "";
     }
 
     function cardTypeString(cardType: DataModel.CardType) {
         if (cardType === DataModel.CardType.Found)
-            return "Нашёлся";
+            return t("common.found");
         else if (cardType === DataModel.CardType.Lost)
-            return "Потерялся";
+            return t("common.lost");
         else return "";
     }
 
@@ -49,7 +52,7 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
     }
 
     function cardSource(cardSource: string) {
-        const intro: string = "Перейти к объявлению | ";
+        const intro: string = `| ${t("cardViewer.goToOrig")}`;
         var url: string = "./img/logo.png";
         var title: string = "";
 
@@ -57,10 +60,24 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
             case "pet911ru":
                 url = "https://pet911.ru/favicon.ico";
                 title = "pet911.ru";
+                break;
+            case "poiskzooru":
+                url = "https://poiskzoo.ru/favicon.ico";
+                title = "poiskzoo.ru";
+                break;
         }
         
-        return <div className="linkToSourceInternalDiv">{intro + "  "}<img className="cardSourceImg" src={url} title={title} alt={title}/>{" " + title}</div>;
+        return (
+            <div className="linkToSourceInternalDiv">
+                <img className="cardSourceImg" width={"25px"} src={url} title={title} alt={title}/>
+                {intro}
+            </div>);
     }
+
+    const failedToLoadCardLocStr = t("cardViewer.failedToDownloadCard")
+    const commentLocStr = t("common.comment")
+    const whenLocStr = t("common.when")
+    const whereLocStr = t("common.where")
 
     if (card.cardType) {
         return (
@@ -68,8 +85,8 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
                 <div className="headerLine">
                     <div className={"cardHeader " + cardTypeClass(card.cardType)}> {cardTypeString(card.cardType)} </div>
                     <div className={"cardInfo " + cardTypeClass(card.cardType)} title={animalGenderString(card.animalSex)}>
-                        <div className="cardDate" title="Когда?"> {card.eventTime.toLocaleDateString()} </div>
-                        <div className="cardCoordsNumbers" title="Где?"> {card.location.address} </div>
+                        <div className="cardDate" title={whenLocStr}> {card.eventTime.toLocaleDateString()} </div>
+                        <div className="cardCoordsNumbers" title={whereLocStr}> {card.location.address} </div>
                     </div>
                     <div className={"animalType " + cardTypeClass(card.cardType)}> {animalType(card.animal, card.animalSex)} </div>
                 </div>
@@ -85,7 +102,7 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
                                     <span className="linkToSourceSpan"></span></a>                         
                             </div>
                         </div>
-                        <div className="cardItemHeader"> Комментарий </div>
+                        <div className="cardItemHeader"> {commentLocStr} </div>
                         <div className="cardCommentText">
                             <div>{card.contactInfo.comment}</div>
                         </div>
@@ -96,7 +113,7 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
     } else {
         // cadd does not exist
         return (
-            <p>Не удалось загрузить карточку.</p>
+            <p>{failedToLoadCardLocStr}</p>
         )
     }
 }

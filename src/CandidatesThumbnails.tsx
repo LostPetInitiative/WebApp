@@ -1,6 +1,5 @@
 import * as React from "react";
 import {useState} from "react";
-import "./AnimalCard.scss"
 import * as ICardStorage from "./apiClients/ICardStorage"
 import * as DataModel from "./DataModel";
 import * as Comp from "./computations"
@@ -10,7 +9,9 @@ import "./CandidatesThumbnails.scss"
 import * as im from "immutable"
 import {_ImageEmbeddingToUse} from "./consts"
 
-import {Stack, Toggle, Spinner, StackItem, Text} from '@fluentui/react'
+import {Stack, Toggle, Spinner, StackItem, Text, SpinnerSize} from '@fluentui/react'
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 /**
  * Renders the thumbnail for the card specified in card prop
@@ -66,6 +67,8 @@ export function AnimalCardThumbnail(props: {
     const similarityText = similarity !== undefined ?
         (<p className="overlay-text">{(similarity*100.0).toFixed(2)}%</p>) : null
 
+    const noPhotoLocStr = t("common.noPhoto")
+
     return (
         <div className={thumbnailContainerClassName}>
             <div className="overlay-info-anchor">
@@ -79,7 +82,7 @@ export function AnimalCardThumbnail(props: {
                 <img src={card.photos[0].srcUrl} alt="Фото"/>
             }
             { card.photos.length === 0 &&
-                <p>Нет фото</p>
+                <p>{noPhotoLocStr}</p>
             }
         </div>
     );
@@ -94,57 +97,50 @@ type AnimalCardThumbnailByIdProps = {
     localID: string
 }
 
-type AnimalCardThumbnailByIdState = {
-    loadedFullID: string,
-    loadedCard: DataModel.AnimalCard | "Loading" | "Unexistent" | "NotSet"
-}
+type LoadedCardState = DataModel.AnimalCard | "Loading" | "Unexistent" | "NotSet"
 
 /**
  * Loads the card identified by `namespace` and `localID` prop asynchronously. Then displays it with `AnimalCardThumbnail`
  */
-export class AnimalCardThumbnailById
-    extends React.Component<AnimalCardThumbnailByIdProps, AnimalCardThumbnailByIdState> {
-    constructor(props: AnimalCardThumbnailByIdProps) {
-        super(props)
-        this.state = {
-            loadedFullID: "",
-            loadedCard: "Loading"
-        }
+export function AnimalCardThumbnailById(props: AnimalCardThumbnailByIdProps) {
+    const {namespace, localID, cardStorage, refCard, isAccented} = props;
+    const [loadedCard,setLoadedCard] = useState<LoadedCardState>("Loading")
+    
+    const {t} = useTranslation("translation")
+
+    React.useEffect(() => {
+        // resetting and initiating background load
+        setLoadedCard("Loading")
+        cardStorage.GetPetCard(namespace, localID).then(result => {
+            if(ICardStorage.isUnexistentCardToken(result)) {
+                setLoadedCard("Unexistent")
+            } else {
+                setLoadedCard(result)
+            }
+        });
+    },[namespace,localID, cardStorage])
+
+    const loadingLocStr = t("common.loading")
+    const unexistentLocStr = t("cards.cardNotFound")
+
+    const thumbnailContainerClassName = "thumbnail-container" + (isAccented ? " accent" : "")
+    
+    switch(loadedCard) {
+        case "Loading":
+            return (
+                <div className={thumbnailContainerClassName}>
+                    <div style={{width:"100%",height:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>
+                    <Spinner label={loadingLocStr} size={SpinnerSize.large} />
+                    </div>
+                </div>)
+        case "NotSet":
+            return <p>Не задано.</p>
+        case "Unexistent":
+            return <p>{unexistentLocStr}</p>
+        default:
+            return <AnimalCardThumbnail card={loadedCard} refCard={refCard} isAccent={isAccented} />
     }
 
-    checkLoadedCard() {
-        const neededFullID = this.props.namespace + "/" + this.props.localID;
-        if (this.state.loadedFullID !== neededFullID) {
-            // resetting and initiating background load
-            this.setState({
-                loadedFullID: neededFullID,
-                loadedCard: (neededFullID==="")?"NotSet":"Loading" })
-            this.props.cardStorage.GetPetCard(this.props.namespace, this.props.localID).then(result => {
-                if(ICardStorage.isUnexistentCardToken(result)) {
-                    this.setState({ loadedCard: "Unexistent" })
-                } else {
-                    const card = result
-                    this.setState({ loadedCard: card })
-                }
-            });
-        }
-    }
-
-    componentDidMount() { this.checkLoadedCard() }
-    componentDidUpdate() { this.checkLoadedCard() }
-
-    render() {
-        switch(this.state.loadedCard) {
-            case "Loading":
-                return <p>Загрузка...</p>
-            case "NotSet":
-                return <p>Не задано.</p>
-            case "Unexistent":
-                return <p>Карточка не найдена.</p>
-            default:
-                return <AnimalCardThumbnail card={this.state.loadedCard} refCard={this.props.refCard} isAccent={this.props.isAccented} />
-        }
-    }
 }
 
 type CandidatesThumbnailsPropsType = {
@@ -294,6 +290,8 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
     const [currentSelectionIdx, setCurrentSelectionIdx] = useState<number>(0);
     const [searchState, setSearchState] = useState<SearchState>({type: SearchStateEnum.None});
 
+    const {t} = useTranslation()
+
     const isSearchInProgress = (searchState.type == SearchStateEnum.SearchingViaCardFeatures && searchState.found === "InProgress") ||
         (searchState.type == SearchStateEnum.SearchingViaImageFeatures && searchState.found.count() < searchState.imagesToSearchCount)
     const searchPercentage = getSearchCompletnessFraction(searchState) * 100.0;
@@ -427,9 +425,13 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
         const delta = Math.max(-1, Math.min(1, (e.deltaX || e.deltaY)))
         e.currentTarget.scrollLeft += (delta * 35)
         e.preventDefault()
-    }    
+    }   
 
-    const errorMessageComp = errorMessage === undefined ? null : (<p>Ошибка: {errorMessage}</p>)
+    const errorLocStr = t("common.error")
+
+    const errorMessageComp = errorMessage === undefined ? null : (<p>{errorLocStr}: {errorMessage}</p>)
+
+    const lookingForMatchesLocStr = t("candidatesReview.lookingForMatches")
 
     const relevantCardElems = React.useMemo(() => {
         const genPreview = ([foundCard, isAccent]: [ISearch.FoundSimilarDoc, boolean]) => {
@@ -446,7 +448,7 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
                 </div>)
         }
 
-        const loadingIndication = isSearchInProgress ? <Spinner label="Поиск совпадений..."></Spinner> : null;
+        const loadingIndication = isSearchInProgress ? <Spinner label={lookingForMatchesLocStr}></Spinner> : null;
         const effectiveSelectedIdx = relevantCards.length>0 ? (currentSelectionIdx % relevantCards.length) : 0;
         var previews = (relevantCards.length>0 || isSearchInProgress) ?
             relevantCards.map((card, idx) => [card, (idx === effectiveSelectedIdx)] as [ISearch.FoundSimilarDoc, boolean]).map(genPreview) :
@@ -456,14 +458,15 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
             {loadingIndication}
             <div className="thumbnails-container">{previews}</div>
             </>        
-    },[relevantCards, props.referenceCard, props.cardStorage, currentSelectionIdx, isSearchInProgress, searchPercentage])    
+    },[relevantCards, props.referenceCard, props.cardStorage, currentSelectionIdx, isSearchInProgress, searchPercentage, lookingForMatchesLocStr])    
 
     
     if (props.referenceCard !== null) {        
+        const possibleMatchesLocStr = t("candidatesReview.possibleMatches")
         return (
             <div className="page" onWheel={wheel}>
-                {/* <div className="title-container"> */}
-                <Stack>
+                <div className="title-container">
+                {/* <Stack>
                     <Toggle
                         label="Фильтр по расстоянию" onText="Далекие исключены" onChange={(_,checked) => setFarFilterEnabled(checked)}
                         defaultChecked={farFilterEnabled} ></Toggle>
@@ -471,16 +474,18 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
                         defaultChecked={longAgoFilterEnabled}
                     ></Toggle>
                     <StackItem align="end">
-                        <p>Возможные совпадения:</p>
+                        
                     </StackItem>
-                </Stack>
-                {/* </div> */}
+                </Stack> */}
+                <p>{possibleMatchesLocStr}</p>
+                </div>
                 {errorMessageComp}
                 {relevantCardElems}
             </div>
         )
     } else {
-        return <p>Загрузка...</p>
+        const loadingLocStr = t("common.loading")
+        return <Spinner label={loadingLocStr}/>
     }
     
 }

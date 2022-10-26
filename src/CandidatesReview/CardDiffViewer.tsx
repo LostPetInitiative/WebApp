@@ -1,7 +1,7 @@
 import * as React from "react";
-import * as Comp from "./computations"
-import * as Utils from "./Utils"
-import * as DataModel from "./DataModel"
+import * as Comp from "../computations"
+import * as Utils from "../Utils"
+import * as DataModel from "../DataModel"
 import "./CardDiffViewer.scss"
 
 function WarningMessage(props: { message: string }) {
@@ -11,11 +11,13 @@ function WarningMessage(props: { message: string }) {
 import DistanceSpaceSVG from './img/distanceS.svg'
 import DistanceTimeSVG from './img/distanceT.svg'
 import SexMismatchWarningSVG from './img/genderDiffers.svg'
-import { _ImageEmbeddingToUse } from "./consts";
+import { _ImageEmbeddingToUse } from "../consts";
+import { useTranslation } from "react-i18next";
 
 /// Presents the difference between two cards
 export function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: DataModel.AnimalCard, card1ImgNum?: number, card2ImgNum?: number }) {
     const {card1, card2, card1ImgNum, card2ImgNum} = props;
+    const {t} = useTranslation()
     const geoDistKM = Comp.geodistance(
         card1.location.lat,
         card1.location.lon,
@@ -47,43 +49,49 @@ export function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: Data
         return (cosSim).toFixed(3);
     }
 
+    const differentSexWarningLocStr = t("diffViewer.differentSexWarning")
     function getSexWarning() {
         if
             ((card1.animalSex !== card2.animalSex) &&
             (card1.animalSex !== DataModel.Sex.Unknown) &&
             (card2.animalSex !== DataModel.Sex.Unknown))
-            return <img src={SexMismatchWarningSVG} alt="Животные, предположительно, разного пола!" title="Животные, предположительно, разного пола!" className="cardDiffGenderIcon"/>
+            return <img src={SexMismatchWarningSVG} alt={differentSexWarningLocStr} title={differentSexWarningLocStr} className="cardDiffGenderIcon"/>
         else return false;
     }
 
+    const differentSpeciesWarningLocStr = t("diffViewer.differentSpeciesWarning")
     function getDifferentAnimalsWarning() {
         if (card1.animal !== card2.animal)
-            return <WarningMessage message="Животные разного вида!" />
+            return <WarningMessage message={differentSpeciesWarningLocStr} />
     }
 
+    const lostAfterFoundWarningLocStr = t("diffViewer.LostAfterFoundWarning")
     function getLostAfterFoundWarning() {
         if (card1.cardType !== card2.cardType) {
             const lostCard = card1.cardType === DataModel.CardType.Lost ? card1 : card2;
             const foundCard = card1.cardType === DataModel.CardType.Lost ? card2 : card1;
             if (lostCard.eventTime > foundCard.eventTime) {
-                return <WarningMessage message="Время находки предшествует времени потери!" />
+                return <WarningMessage message={lostAfterFoundWarningLocStr} />
             }
         }
         return false;
     }
 
+    const distanceLocStr = t("common.distance")
+    const timeDifferenceLocStr = t("diffViewer.timeDifference")
+    const similarityLocStr = t("diffViewer.similarity")
     return (
         <div className="cardDiffViewer">
             <div className="cardDiffItems">
-                <img className="cardDiffIcons" src={DistanceSpaceSVG} alt="Расстояние" title="Расстояние"/>{geoDistStr}
+                <img className="cardDiffIcons" src={DistanceSpaceSVG} alt={distanceLocStr} title={distanceLocStr}/>{geoDistStr}
             </div>
             <div className="cardDiffItems">
-                <img className="cardDiffIcons" src={DistanceTimeSVG} alt="Между событиями прошло" title="Между событиями прошло"/>{timeDiffStr}
+                <img className="cardDiffIcons" src={DistanceTimeSVG} alt={timeDifferenceLocStr} title={timeDifferenceLocStr}/>{timeDiffStr}
             </div>
             <div className="cardDiffItems">
                 <img className="cardDiffIcons" src="https://img.icons8.com/color/48/000000/look-alike.png"
-                    alt="Схожесть (чем ближе к 1.0, тем более похоже)"
-                    title="Схожесть (чем ближе к 1.0, тем более похоже)"/>
+                    alt={similarityLocStr}
+                    title={similarityLocStr}/>
                 {getFeaturesDiff()}
             </div>
             {/* {getFeaturesDifferences()} */}

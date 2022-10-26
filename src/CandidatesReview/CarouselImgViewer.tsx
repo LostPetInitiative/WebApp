@@ -1,6 +1,6 @@
 import * as React from "react";
 import AnimalPhotos from "./AnimalPhotos";
-import { AnimalPhoto } from "./DataModel";
+import { AnimalPhoto } from "../DataModel";
 import './CarouselImgViewer.scss'
 
 type PropsType = {
