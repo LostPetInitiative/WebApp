@@ -19,6 +19,8 @@ export const resources = {
               when: "Когда?",
               where: "Где?",
               cardNotFound: "Карточка не найдена",
+              error: "Ошибка",
+              noPhoto: "Нет фото"
             },
             cardViewer: {
               goToOrig: "Перейти к объявлению",
@@ -27,6 +29,9 @@ export const resources = {
             candidatesReview: {
               section: "Сравнение объявлений",
               cardNotSelectedSelectBelow: "Карточка не выбрана. Выберите карточку из списка снизу",
+              lookingForMatches: "Поиск совпадений...",
+              possibleMatches: "Возможные совпадения:",
+              lookingForMostRecentFound: "Поиск самого свежего объявления о находке животного..."
             },
             diffViewer: {
               differentSexWarning: "Животные, предположительно, разного пола!",
@@ -101,14 +106,20 @@ export const resources = {
               comment: "Comment",
               when: "When?",
               where: "Where?",
+              cardNotFound: "Card not found",
+              error: "Error",
+              noPhoto: "No photo"
             },
             cardViewer: {
               goToOrig: "Open orig message",
-              failedToDownloadCard: "Failed to load the card",
+              failedToDownloadCard: "Failed to load the card"
             },
             candidatesReview: {
               section: "Cards comparison",
               cardNotSelectedSelectBelow: "Card is not selected. Select a card below",
+              lookingForMatches: "Looking for matches...",
+              possibleMatches: "Possible matches:",
+              lookingForMostRecentFound: "Looking for the most recent \"found\" card..."
             },
             diffViewer: {
               differentSexWarning: "The animals are of different sex!",
@@ -118,7 +129,6 @@ export const resources = {
               similarity: "Similarity (more closer to 1.0 is more similar)"
             },
             cards: {
-              cardNotFound: "Card not found",
               latestCardsPreview: {
                 downloadingLatestCards: "Loading latest cards...",
                 downloadFailed: "Failed to get latest cards",
@@ -163,7 +173,7 @@ export const resources = {
                   maria: {
                     name: 'Maria Eliseeva',
                     title: 'Researcher',
-                    desc: "During the masters thesis preparation Maria created data annotation process, annotated the data for machine learning and carried out data analysis."
+                    desc: "During the masters thesis preparation Maria organized data annotation process, annotated data for machine learning and carried out data analysis."
                   }
             },
         }

@@ -45,35 +45,32 @@ if (development) {
 const cardStorage: ICardStorage.ICardStorage = new RestCardStorage.CardStorage(cardStorageURL);
 const searchEngine: ISearch.ISearch = new SolrGatewaySearcher(solrGatewayURL)
 
-class LatestFoundCardCandidatesReview extends React.Component<{},
-  {
-    'latestFoundCardID': ([string, string] | null),
-  }> {
-  constructor(props: {}) {
-    super(props);
+function LatestFoundCardCandidatesReview() {
+  const {t} = useTranslation()
 
-    this.state = { latestFoundCardID: null }
-  }
+  const [ latestFoundCardID, setLatestFoundCardID] = React.useState<[string,string] | null>(null)
 
-  componentDidMount() {
+  React.useEffect(() => {
     searchEngine.GetLatestCards(1, ISearch.LatestCardSearchType.Found).then(cards => {
       const latestCard = cards[0]
-      this.setState({ latestFoundCardID: [latestCard.namespace, latestCard.id] })
+      setLatestFoundCardID([latestCard.namespace, latestCard.id])
     });
-  }
+  },[])
 
-  render() {
-    if (this.state.latestFoundCardID === null) {
-      return (
-        <p>Поиск самого свежего объявления о находке...</p>
-      )
-    } else {
-      const ns1 = this.state.latestFoundCardID[0]
-      const id1 = this.state.latestFoundCardID[1]
-      const fullMainID = ns1 + "/" + id1
-      return <Redirect to={"/candidatesReview/" + fullMainID} />
-    }
+
+  const lookingForMostRecentFoundLocStr = t("candidatesReview.lookingForMostRecentFound")
+  
+  if (latestFoundCardID === null) {
+    return (
+      <Spinner size={SpinnerSize.large} label={lookingForMostRecentFoundLocStr}/>
+    )
+  } else {
+    const ns1 = latestFoundCardID[0]
+    const id1 = latestFoundCardID[1]
+    const fullMainID = ns1 + "/" + id1
+    return <Redirect to={"/candidatesReview/" + fullMainID} />
   }
+  
 }
 
 function SpecificCandidatesReview() {
@@ -107,8 +104,9 @@ import CompareAbPale from './img/menus/compare_ab_pale.png'
 import QuestionsOrange from './img/menus/questions_orange.png'
 import QuestionsPale from './img/menus/questions_pale.png'
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { ThemeProvider } from "@fluentui/react";
+import { Spinner, SpinnerSize, ThemeProvider } from "@fluentui/react";
 import { kashtankaTheme } from "./Theme";
+import { useTranslation } from "react-i18next";
 
 function Menu() {
   return (

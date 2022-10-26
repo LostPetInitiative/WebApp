@@ -61,7 +61,7 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
                 url = "https://pet911.ru/favicon.ico";
                 title = "pet911.ru";
                 break;
-            case "poiskzoo":
+            case "poiskzooru":
                 url = "https://poiskzoo.ru/favicon.ico";
                 title = "poiskzoo.ru";
                 break;
