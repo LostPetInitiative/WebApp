@@ -10,7 +10,8 @@ import "./CandidatesThumbnails.scss"
 import * as im from "immutable"
 import {_ImageEmbeddingToUse} from "./consts"
 
-import {Stack, Toggle, Spinner, StackItem, Text} from '@fluentui/react'
+import {Stack, Toggle, Spinner, StackItem, Text, SpinnerSize} from '@fluentui/react'
+import { useTranslation } from "react-i18next";
 
 /**
  * Renders the thumbnail for the card specified in card prop
@@ -94,57 +95,50 @@ type AnimalCardThumbnailByIdProps = {
     localID: string
 }
 
-type AnimalCardThumbnailByIdState = {
-    loadedFullID: string,
-    loadedCard: DataModel.AnimalCard | "Loading" | "Unexistent" | "NotSet"
-}
+type LoadedCardState = DataModel.AnimalCard | "Loading" | "Unexistent" | "NotSet"
 
 /**
  * Loads the card identified by `namespace` and `localID` prop asynchronously. Then displays it with `AnimalCardThumbnail`
  */
-export class AnimalCardThumbnailById
-    extends React.Component<AnimalCardThumbnailByIdProps, AnimalCardThumbnailByIdState> {
-    constructor(props: AnimalCardThumbnailByIdProps) {
-        super(props)
-        this.state = {
-            loadedFullID: "",
-            loadedCard: "Loading"
-        }
+export function AnimalCardThumbnailById(props: AnimalCardThumbnailByIdProps) {
+    const {namespace, localID, cardStorage, refCard, isAccented} = props;
+    const [loadedCard,setLoadedCard] = useState<LoadedCardState>("Loading")
+    
+    const {t} = useTranslation("translation")
+
+    React.useEffect(() => {
+        // resetting and initiating background load
+        setLoadedCard("Loading")
+        cardStorage.GetPetCard(namespace, localID).then(result => {
+            if(ICardStorage.isUnexistentCardToken(result)) {
+                setLoadedCard("Unexistent")
+            } else {
+                setLoadedCard(result)
+            }
+        });
+    },[namespace,localID, cardStorage])
+
+    const loadingLocStr = t("common.loading")
+    const unexistentLocStr = t("cards.cardNotFound")
+
+    const thumbnailContainerClassName = "thumbnail-container" + (isAccented ? " accent" : "")
+    
+    switch(loadedCard) {
+        case "Loading":
+            return (
+                <div className={thumbnailContainerClassName}>
+                    <div style={{width:"100%",height:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>
+                    <Spinner label={loadingLocStr} size={SpinnerSize.large} />
+                    </div>
+                </div>)
+        case "NotSet":
+            return <p>Не задано.</p>
+        case "Unexistent":
+            return <p>{unexistentLocStr}</p>
+        default:
+            return <AnimalCardThumbnail card={loadedCard} refCard={refCard} isAccent={isAccented} />
     }
 
-    checkLoadedCard() {
-        const neededFullID = this.props.namespace + "/" + this.props.localID;
-        if (this.state.loadedFullID !== neededFullID) {
-            // resetting and initiating background load
-            this.setState({
-                loadedFullID: neededFullID,
-                loadedCard: (neededFullID==="")?"NotSet":"Loading" })
-            this.props.cardStorage.GetPetCard(this.props.namespace, this.props.localID).then(result => {
-                if(ICardStorage.isUnexistentCardToken(result)) {
-                    this.setState({ loadedCard: "Unexistent" })
-                } else {
-                    const card = result
-                    this.setState({ loadedCard: card })
-                }
-            });
-        }
-    }
-
-    componentDidMount() { this.checkLoadedCard() }
-    componentDidUpdate() { this.checkLoadedCard() }
-
-    render() {
-        switch(this.state.loadedCard) {
-            case "Loading":
-                return <p>Загрузка...</p>
-            case "NotSet":
-                return <p>Не задано.</p>
-            case "Unexistent":
-                return <p>Карточка не найдена.</p>
-            default:
-                return <AnimalCardThumbnail card={this.state.loadedCard} refCard={this.props.refCard} isAccent={this.props.isAccented} />
-        }
-    }
 }
 
 type CandidatesThumbnailsPropsType = {

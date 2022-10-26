@@ -107,9 +107,10 @@ import CompareAbPale from './img/menus/compare_ab_pale.png'
 import QuestionsOrange from './img/menus/questions_orange.png'
 import QuestionsPale from './img/menus/questions_pale.png'
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeProvider } from "@fluentui/react";
+import { kashtankaTheme } from "./Theme";
 
 function Menu() {
-
   return (
     <div id="leftColumnMenu">
       <div id="appStateMenu">
@@ -168,30 +169,32 @@ function LandingWithLatestCards() {
 
 function App() {
   return (
-    <Router>
-      {(!development) &&
-        <Tracker trackerHostName={"matomo.grechka.family"} />
-      }
-      <div className="parentDiv">
-        <Menu />
-        <div className="AppModeViewer">
-          <Switch>
-            <Route path="/candidatesReview/:ns1/:id1/:ns2/:id2" children={<SpecificCandidatesReview />} />
-            <Route path="/candidatesReview/:ns1/:id1" children={<SpecificCandidatesReview />} />
-            <Route path="/candidatesReview" children={<LatestFoundCardCandidatesReview />} />
-            <Route path="/board">
-              <MatchesBoard />
-            </Route>
-            <Route path="/faq">
-              <Faq />
-            </Route>
-            <Route path="/">
-              <LandingWithLatestCards />
-            </Route>
-          </Switch>
+    <ThemeProvider applyTo='body' theme={kashtankaTheme}>
+      <Router>
+        {(!development) &&
+          <Tracker trackerHostName={"matomo.grechka.family"} />
+        }
+        <div className="parentDiv">
+          <Menu />
+          <div className="AppModeViewer">
+            <Switch>
+              <Route path="/candidatesReview/:ns1/:id1/:ns2/:id2" children={<SpecificCandidatesReview />} />
+              <Route path="/candidatesReview/:ns1/:id1" children={<SpecificCandidatesReview />} />
+              <Route path="/candidatesReview" children={<LatestFoundCardCandidatesReview />} />
+              <Route path="/board">
+                <MatchesBoard />
+              </Route>
+              <Route path="/faq">
+                <Faq />
+              </Route>
+              <Route path="/">
+                <LandingWithLatestCards />
+              </Route>
+            </Switch>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </ThemeProvider>
   );
 }
 

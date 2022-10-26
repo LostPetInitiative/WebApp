@@ -7,7 +7,11 @@ export const resources = {
         translation: {
             kashtanka: "Каштанка",
             title: "Каштанка - автоматический поиск потерянных и найденных домашних животных",
+            common: {
+              loading:"Загрузка..."
+            },
             cards: {
+              cardNotFound: "Карточка не найдена",
               latestCardsPreview: {
                 downloadingLatestCards: "Загружаю самые свежие объявления...",
                 downloadFailed: "Не удалось загрузить свежие объявления",
@@ -32,7 +36,7 @@ export const resources = {
                     nikolay: {
                         name: "Николай Арефьев",
                         title: "Научный руководитель, Исследователь",
-                        desc: "Николай - научный руководитель студентов и аспирантов, занимающихся применением машинного обучения. Координатор научного взаимодействия в рамках проекта."
+                        desc: "Николай - научный руководитель студентов и аспирантов, занимающихся применением машинного обучения, координатор научного взаимодействия в рамках проекта. Николай и Вячеслав подготовили набор данных для обучения и оценки качества моделей поиска животных, создали online конкурс лучших моделей"
                     },
                     zhirui: {
                       name: 'Zhirui',
@@ -47,11 +51,10 @@ export const resources = {
                     vyacheslav: {
                         name: 'Вячеслав Строев',
                         title: 'Исследователь',
-                        desc: "В рамках работы над кандидатской диссертацией Вячеслав подготовил набор данных для обучения и оценки качества моделей поиска животных. Создал конкурс лучших моделей. Обучил модели поиска животных, основанные на BLIP"
+                        desc: "В рамках работы над кандидатской диссертацией Вячеслав подготовил набор данных для обучения и оценки качества моделей поиска животных. Создал online конкурс лучших моделей. Обучил модели поиска животных, основанные на BLIP"
                     },
                     maria: {
-                      // name: 'Мария Елисеева',
-                      name: 'Мария',
+                      name: 'Мария Елисеева',
                       title: 'Исследователь',
                       desc: "В рамках работы над магистерской диссертацией Мария работала над средствами разметки данных, самой разметкой данных для машинного обучения, а также анализом распределения данных."
                     }
@@ -63,9 +66,13 @@ export const resources = {
         translation: {
             kashtanka: "Kashtanka",
             title: "Kashtanka - AI powered search of lost and found pets",
+            common: {
+              loading:"Loading..."
+            },
             cards: {
+              cardNotFound: "Card not found",
               latestCardsPreview: {
-                downloadingLatestCards: "Downloading latest cards...",
+                downloadingLatestCards: "Loading latest cards...",
                 downloadFailed: "Failed to get latest cards",
                 downloadedLatestCards: "Latest cards processed by Kashtanka:"
               }
@@ -88,7 +95,7 @@ export const resources = {
                   nikolay: {
                       name: "Nikolay Arefyev",
                       title: "Scientific advisor, Researcher",
-                      desc: "Nikolay is a scientific advisor of master and PhD students involved in the project. Organizes research talks and curates research directions."
+                      desc: "Nikolay is a scientific advisor of master and PhD students involved in the project. Organizes research talks and curates research directions. Nikolay & Vyacheslav created a dataset for training and evaluation of pet retrieval models. They also created evaluation scripts and the leaderboard."
                   },
                   zhirui: {
                     name: 'Zhirui',
@@ -106,8 +113,7 @@ export const resources = {
                     desc: "During the PhD thesis perparation Vyacheslav created a dataset for training and evaluation of pet retrieval models. Created evaluation scripts and the leaderboard. Trained BLIP-based models of pet retrieval."
                   },
                   maria: {
-                    // name: 'Мария Елисеева',
-                    name: 'Maria',
+                    name: 'Maria Eliseeva',
                     title: 'Researcher',
                     desc: "During the masters thesis preparation Maria created data annotation process, annotated the data for machine learning and carried out data analysis."
                   }
