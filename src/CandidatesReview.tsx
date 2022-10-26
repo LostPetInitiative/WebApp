@@ -5,6 +5,7 @@ import * as ISearch from "./apiClients/ISearch"
 import * as Thumbnails from "./CandidatesThumbnails"
 import * as TwoCards from "./TwoCards"
 import "./CandidatesReview.scss"
+import { useTranslation } from "react-i18next";
 
 type PropsType = {
     cardStorage: ICardStorage.ICardStorage,
@@ -13,117 +14,98 @@ type PropsType = {
     candCardFullID: string,
     candCardFullIDChanged: (newCandCardFullID: string) => void
 }
-type StateType = {
-    shownMainFullID: string,
-    shownMainCard: DataModel.AnimalCard | "Loading" | "DoesNotExist" | "NotSet",
-    shownCandFullID: string,
-    shownCandCard: DataModel.AnimalCard | "Loading" | "DoesNotExist" | "NotSet"
+
+function cardStateToCardAssignement(cardState:DataModel.AnimalCard | "Loading" | "DoesNotExist" | "NotSet"):TwoCards.CardAssignment {
+    if (cardState === "DoesNotExist") {
+        return "unexistent"
+    } else if (cardState === "NotSet") {
+        return "unassigned"
+    } else if (cardState === "Loading") {
+        return  "loading"
+    } else {
+        return cardState
+    }
 }
 
-class CandidatesReview extends React.Component<PropsType, StateType> {
-    constructor(props: PropsType) {
-        super(props)
 
-        this.state = {
-            shownMainFullID: "",
-            shownCandFullID: "",
-            shownMainCard: "NotSet",
-            shownCandCard: "NotSet"
-        }
-    }
+export function CandidatesReview(props: PropsType) {
+    const {mainCardFullID, candCardFullID, cardStorage, searcher, candCardFullIDChanged} = props;
+    const [shownMainCard,setShownMainCard] = React.useState<DataModel.AnimalCard | "Loading" | "DoesNotExist" | "NotSet">("NotSet")
+    const [shownCandCard,setShownCandCard] = React.useState<DataModel.AnimalCard | "Loading" | "DoesNotExist" | "NotSet">("NotSet")
+    
+    const {t} = useTranslation()
 
-    checkLoadedData() {
-        document.title = "Каштанка - автоматический поиск потерянных и найденных домашних животных - Сравнение объявлений"
-
-        if (this.state.shownMainFullID !== this.props.mainCardFullID) {
-            this.setState({
-                shownMainFullID: this.props.mainCardFullID,
-                shownMainCard: (this.props.mainCardFullID !== "") ? "Loading" : "NotSet"
-            })
-            if (this.props.mainCardFullID !== "") {
-                const that = this;
-                console.log("Fetching main card " + this.props.mainCardFullID)
-                this.props.cardStorage.GetPetCardByFullID(this.props.mainCardFullID).then(result => {
-                    if (ICardStorage.isUnexistentCardToken(result)) {
-                        const checkedCardId = result.UnexistentCardNamespace + "/" + result.UnexistentCardID
-                        if (that.state.shownMainFullID === checkedCardId) {
-                            console.warn("Got \"card does not exist in the storage\" main card reply")
-                            this.setState({ shownMainCard: "DoesNotExist" })
-                        } else {
-                            console.log("Got stale non-existent reply for request main card " + this.props.mainCardFullID + ". Ignoring")
-                        }
-                    }
-                    else {
-                        const card = result
-                        const downloadedCardId = card.namespace + "/" + card.id
-                        if (that.state.shownMainFullID === downloadedCardId) {
-                            console.log("Got main card " + this.props.mainCardFullID)
-                            this.setState({ shownMainCard: card })
-                        } else {
-                            console.log("Got stale reply for request main card " + this.props.mainCardFullID + ". Ignoring")
-                        }
-                    }
-                });
-            }
-        }
-
-        if (this.state.shownCandFullID !== this.props.candCardFullID) {
-            this.setState({
-                shownCandFullID: this.props.candCardFullID,
-                shownCandCard: (this.props.candCardFullID !== "") ? "Loading" : "NotSet"
-            })
-            if (this.props.candCardFullID !== "") {
-                const that = this;
-                console.log("Fetching cand card " + this.props.candCardFullID)
-                this.props.cardStorage.GetPetCardByFullID(this.props.candCardFullID).then(result => {
-                    if (ICardStorage.isUnexistentCardToken(result)) {
-                        const checkedCardId = result.UnexistentCardNamespace + "/" + result.UnexistentCardID
-                        if (that.state.shownMainFullID === checkedCardId) {
-                            console.warn("Got \"card does not exist in the storage\" cand card reply")
-                            this.setState({ shownCandCard: "DoesNotExist" })
-                        } else {
-                            console.log("Got stale non-existent reply for request cand card " + this.props.mainCardFullID + ". Ignoring")
-                        }
+    React.useEffect(() => {
+        if (mainCardFullID !== "") {
+            setShownMainCard("Loading")            
+            console.log("Fetching main card " + mainCardFullID)
+            cardStorage.GetPetCardByFullID(mainCardFullID).then(result => {
+                if (ICardStorage.isUnexistentCardToken(result)) {
+                    const checkedCardId = result.UnexistentCardNamespace + "/" + result.UnexistentCardID
+                    if (mainCardFullID === checkedCardId) {
+                        console.warn("Got \"card does not exist in the storage\" main card reply")
+                        setShownMainCard("DoesNotExist")
                     } else {
-                        const card = result
-                        const downloadedCardId = card.namespace + "/" + card.id
-                        if (that.state.shownCandFullID === downloadedCardId) {
-                            console.log("Got cand card " + this.props.candCardFullID)
-                            this.setState({ shownCandCard: card })
-                        } else {
-                            console.log("Got stale request cand card " + this.props.candCardFullID + ". Ignoring")
-                        }
+                        console.log("Got stale non-existent reply for request main card " + mainCardFullID + ". Ignoring")
                     }
-                });
-            }
-        }
-    }
-
-    componentDidMount() {
-        this.checkLoadedData()
-    }
-
-    componentDidUpdate() {
-        this.checkLoadedData()
-    }
-
-    static cardStateToCardAssignement(cardState:DataModel.AnimalCard | "Loading" | "DoesNotExist" | "NotSet"):TwoCards.CardAssignment {
-        if (cardState === "DoesNotExist") {
-            return "unexistent"
-        } else if (cardState === "NotSet") {
-            return "unassigned"
-        } else if (cardState === "Loading") {
-            return  "loading"
+                }
+                else {
+                    const card = result
+                    const downloadedCardId = card.namespace + "/" + card.id
+                    if (mainCardFullID === downloadedCardId) {
+                        console.log("Got main card " + mainCardFullID)
+                        setShownMainCard(card)
+                    } else {
+                        console.log("Got stale reply for request main card " + mainCardFullID + ". Ignoring")
+                    }
+                }
+            });
         } else {
-            return cardState
+            setShownMainCard("NotSet")
         }
-    }
+    },[mainCardFullID, cardStorage])
 
-    renderUpperScreen() {
+    React.useEffect(() => {
+        if (candCardFullID !== "") {
+            setShownCandCard("Loading")            
+            console.log("Fetching cand card " + candCardFullID)
+            cardStorage.GetPetCardByFullID(candCardFullID).then(result => {
+                if (ICardStorage.isUnexistentCardToken(result)) {
+                    const checkedCardId = result.UnexistentCardNamespace + "/" + result.UnexistentCardID
+                    if (candCardFullID === checkedCardId) {
+                        console.warn("Got \"card does not exist in the storage\" cand card reply")
+                        setShownCandCard("DoesNotExist")
+                    } else {
+                        console.log("Got stale non-existent reply for request cand card " + candCardFullID + ". Ignoring")
+                    }
+                }
+                else {
+                    const card = result
+                    const downloadedCardId = card.namespace + "/" + card.id
+                    if (candCardFullID === downloadedCardId) {
+                        console.log("Got cand card " + candCardFullID)
+                        setShownCandCard(card)
+                    } else {
+                        console.log("Got stale reply for request cand card " + candCardFullID + ". Ignoring")
+                    }
+                }
+            });
+        } else {
+            setShownCandCard("NotSet")
+        }
+    },[candCardFullID, cardStorage])
+
+    React.useEffect(() => {
+        document.title = t("title") + ' - '+t('candidatesReview.section')
+      },[]);    
+
+
+    
+    const renderUpperScreen = () => {
         var leftCardAssignment: TwoCards.CardAssignment;
         var rightCardAssignment: TwoCards.CardAssignment;
 
-        const mainCardAssignment = CandidatesReview.cardStateToCardAssignement(this.state.shownMainCard)
+        const mainCardAssignment = cardStateToCardAssignement(shownMainCard)
         switch(mainCardAssignment)
         {
             case "unexistent":
@@ -137,7 +119,7 @@ class CandidatesReview extends React.Component<PropsType, StateType> {
                 break;
             default:
                 const card = mainCardAssignment
-                const depCardAssignment = CandidatesReview.cardStateToCardAssignement(this.state.shownCandCard)
+                const depCardAssignment = cardStateToCardAssignement(shownCandCard)
                 const isLostCard = card.cardType === DataModel.CardType.Found
                 if (isLostCard) {
                     // Found cards are presented at the left part
@@ -157,29 +139,27 @@ class CandidatesReview extends React.Component<PropsType, StateType> {
         )
     }
 
-    handleSelectionChanged(newCandFullID: string) {
+    const handleSelectionChanged = (newCandFullID: string) => {
         // passing up the event to the parent
-        if (this.props.candCardFullIDChanged !== null) {
-            this.props.candCardFullIDChanged(newCandFullID)
-        }
+        candCardFullIDChanged?.(newCandFullID)
     }
 
-    renderLowerScreen() {
+    const renderLowerScreen = () => {
         var lowerContent
-        switch(this.state.shownMainCard) {
+        switch(shownMainCard) {
             case "DoesNotExist":
             case "NotSet":
                 lowerContent = false
                 break
             case "Loading":
             default:
-                const mainCard = this.state.shownMainCard === "Loading" ? null : this.state.shownMainCard
+                const mainCard = shownMainCard === "Loading" ? null : shownMainCard
                 lowerContent = <Thumbnails.CandidatesThumbnails
                                 referenceCard={mainCard}
-                                selectedCardFullID={this.state.shownCandFullID}
-                                selectionChanged={(newFullID) => this.handleSelectionChanged(newFullID)}
-                                searcher={this.props.searcher}
-                                cardStorage={this.props.cardStorage} />
+                                selectedCardFullID={candCardFullID}
+                                selectionChanged={(newFullID) => handleSelectionChanged(newFullID)}
+                                searcher={searcher}
+                                cardStorage={cardStorage} />
         }
         return (
             <div className="lower-screen">
@@ -188,17 +168,15 @@ class CandidatesReview extends React.Component<PropsType, StateType> {
         )
     }
 
-    render() {
-        const upperScreen = this.renderUpperScreen()
-        const lowerScreen = this.renderLowerScreen()
+    
+        const upperScreen = renderUpperScreen()
+        const lowerScreen = renderLowerScreen()
         return (
             <div className="CandidatesReview">
                 {upperScreen}
                 {lowerScreen}
             </div>
         )
-    }
+    
 
 }
-
-export default CandidatesReview;

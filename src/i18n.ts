@@ -8,10 +8,34 @@ export const resources = {
             kashtanka: "Каштанка",
             title: "Каштанка - автоматический поиск потерянных и найденных домашних животных",
             common: {
-              loading:"Загрузка..."
+              loading:"Загрузка...",
+              distance: "Расстояние",
+              animal: "Животное",
+              lost: "Потерялся",
+              found: "Нашелся",
+              male: "Мальчик",
+              female: "Девочка",
+              comment: "Комментарий",
+              when: "Когда?",
+              where: "Где?",
+              cardNotFound: "Карточка не найдена",
+            },
+            cardViewer: {
+              goToOrig: "Перейти к объявлению",
+              failedToDownloadCard: "Не удалось загрузить карточку",
+            },
+            candidatesReview: {
+              section: "Сравнение объявлений",
+              cardNotSelectedSelectBelow: "Карточка не выбрана. Выберите карточку из списка снизу",
+            },
+            diffViewer: {
+              differentSexWarning: "Животные, предположительно, разного пола!",
+              differentSpeciesWarning: "Животные разного вида!",
+              LostAfterFoundWarning: "Время находки предшествует времени пропажи!",
+              timeDifference: "Между событиями прошло",
+              similarity: "Схожесть (чем ближе к 1.0, тем более похоже)"
             },
             cards: {
-              cardNotFound: "Карточка не найдена",
               latestCardsPreview: {
                 downloadingLatestCards: "Загружаю самые свежие объявления...",
                 downloadFailed: "Не удалось загрузить свежие объявления",
@@ -67,7 +91,31 @@ export const resources = {
             kashtanka: "Kashtanka",
             title: "Kashtanka - AI powered search of lost and found pets",
             common: {
-              loading:"Loading..."
+              loading:"Loading...",
+              distance: "Distance",
+              animal: "Animal",
+              lost: "Lost",
+              found: "Found",
+              male: "Boy",
+              female: "Girl",
+              comment: "Comment",
+              when: "When?",
+              where: "Where?",
+            },
+            cardViewer: {
+              goToOrig: "Open orig message",
+              failedToDownloadCard: "Failed to load the card",
+            },
+            candidatesReview: {
+              section: "Cards comparison",
+              cardNotSelectedSelectBelow: "Card is not selected. Select a card below",
+            },
+            diffViewer: {
+              differentSexWarning: "The animals are of different sex!",
+              differentSpeciesWarning: "The animals are of different species!",
+              LostAfterFoundWarning: "Found event precedes the lost event!",
+              timeDifference: "Time between the events",
+              similarity: "Similarity (more closer to 1.0 is more similar)"
             },
             cards: {
               cardNotFound: "Card not found",

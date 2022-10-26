@@ -44,7 +44,7 @@ const enText = (
     <p>
      Kashtanka joins the efforts of human volunteers and AI to help lost pets get to their homes.
     </p>
-    <h2>How does it work</h2>
+    <h2>How it works</h2>
     <ol>
       <li>
         Kashtanka web crawlers constantly monitor dedicated web sites for 
@@ -76,7 +76,7 @@ function Landing(props: {}) {
   const { t } = useTranslation("translation", { keyPrefix: "landing" });
   React.useEffect(() => {
     document.title = tGen("title");
-  });
+  },[]);
 
   // TODO: can we ensure that the compoent is rerendered upon language change?
   var text: JSX.Element;

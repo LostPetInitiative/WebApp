@@ -4,6 +4,8 @@ import "./TwoCards.css"
 import CardDiffViewer from "./CardDiffViewer"
 import * as DataModel from "./DataModel"
 import AnimalCard from "./AnimalCard";
+import { useTranslation } from "react-i18next";
+import { Spinner, SpinnerSize } from "@fluentui/react";
 
 export type CardAssignment = DataModel.AnimalCard | "unassigned" | "loading" | "unexistent"
 
@@ -16,11 +18,17 @@ export function TwoCardsViewer(props: PropsType) {
     const [leftImg,setLeftImg] = React.useState(0);
     const [rightImg, setRightImg] = React.useState(0);
 
+    const {t} = useTranslation()
+
+    const loadingLocStr = t("common.loading")
+    const cardNotSelectedLocStr = t("candidatesReview.cardNotSelectedSelectBelow")
+    const cardNotFoundLocStr = t("common.cardNotFound")
+
     function getCardViewer(card: CardAssignment, onImgChanged?:(num:number) => void) {
         switch(card) {
-            case "loading": return <p>Загрузка...</p>;
-            case "unassigned": return <p>Карточка не выбрана. Выберите карточку из списка снизу.</p>;
-            case "unexistent": return <p>Карточка не найдена.</p>
+            case "loading": return <Spinner label={loadingLocStr} size={SpinnerSize.large} />;
+            case "unassigned": return <p>{cardNotSelectedLocStr}</p>;
+            case "unexistent": return <p>{cardNotFoundLocStr}</p>
             default: return <AnimalCard card={card} imageIdxChanged={onImgChanged} />
         }
     }

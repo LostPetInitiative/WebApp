@@ -218,7 +218,7 @@ function Faq(props: {}) {
 
   React.useEffect(() => {
     document.title = tGen("title") + ' - '+t('section')
-  });
+  },[]);
 
   const kashtankaTeamStr = t("kashtankaTeam");
 
