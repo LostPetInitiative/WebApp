@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./AnimalCard.scss"
-import * as DataModel from "./DataModel";
+import * as DataModel from "../DataModel";
 import {CarouselImgViewer} from "./CarouselImgViewer";
 import { useTranslation } from "react-i18next";
 

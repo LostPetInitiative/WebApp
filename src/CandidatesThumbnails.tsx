@@ -1,6 +1,5 @@
 import * as React from "react";
 import {useState} from "react";
-import "./AnimalCard.scss"
 import * as ICardStorage from "./apiClients/ICardStorage"
 import * as DataModel from "./DataModel";
 import * as Comp from "./computations"

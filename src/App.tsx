@@ -1,7 +1,7 @@
 import * as React from "react"
 import './DataModel'
 import './App.scss';
-import { CandidatesReview } from './CandidatesReview'
+import { CandidatesReview } from './CandidatesReview/CandidatesReview'
 import "./apiClients/RestApiCardStorage"
 import * as ICardStorage from "./apiClients/ICardStorage"
 import * as ISearch from "./apiClients/ISearch"

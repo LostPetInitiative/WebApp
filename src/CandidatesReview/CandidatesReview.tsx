@@ -1,8 +1,8 @@
 import * as React from "react";
-import * as DataModel from "./DataModel"
-import * as ICardStorage from "./apiClients/ICardStorage"
-import * as ISearch from "./apiClients/ISearch"
-import * as Thumbnails from "./CandidatesThumbnails"
+import * as DataModel from "../DataModel"
+import * as ICardStorage from "../apiClients/ICardStorage"
+import * as ISearch from "../apiClients/ISearch"
+import * as Thumbnails from "../CandidatesThumbnails"
 import * as TwoCards from "./TwoCards"
 import "./CandidatesReview.scss"
 import { useTranslation } from "react-i18next";

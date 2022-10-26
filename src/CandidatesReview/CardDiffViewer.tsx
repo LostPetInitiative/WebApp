@@ -1,7 +1,7 @@
 import * as React from "react";
-import * as Comp from "./computations"
-import * as Utils from "./Utils"
-import * as DataModel from "./DataModel"
+import * as Comp from "../computations"
+import * as Utils from "../Utils"
+import * as DataModel from "../DataModel"
 import "./CardDiffViewer.scss"
 
 function WarningMessage(props: { message: string }) {
@@ -11,7 +11,7 @@ function WarningMessage(props: { message: string }) {
 import DistanceSpaceSVG from './img/distanceS.svg'
 import DistanceTimeSVG from './img/distanceT.svg'
 import SexMismatchWarningSVG from './img/genderDiffers.svg'
-import { _ImageEmbeddingToUse } from "./consts";
+import { _ImageEmbeddingToUse } from "../consts";
 import { useTranslation } from "react-i18next";
 
 /// Presents the difference between two cards

@@ -1,8 +1,8 @@
 import * as React from "react";
-import "./apiClients/ICardStorage"
+import "../apiClients/ICardStorage"
 import "./TwoCards.css"
 import CardDiffViewer from "./CardDiffViewer"
-import * as DataModel from "./DataModel"
+import * as DataModel from "../DataModel"
 import AnimalCard from "./AnimalCard";
 import { useTranslation } from "react-i18next";
 import { Spinner, SpinnerSize } from "@fluentui/react";
