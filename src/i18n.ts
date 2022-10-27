@@ -68,7 +68,7 @@ export const resources = {
                         desc: "Николай - научный руководитель студентов и аспирантов, занимающихся применением машинного обучения, координатор научного взаимодействия в рамках проекта. Николай и Вячеслав подготовили набор данных для обучения и оценки качества моделей поиска животных, создали online конкурс лучших моделей"
                     },
                     zhirui: {
-                      name: 'Zhirui',
+                      name: 'Zhirui Zhou',
                       title: 'Создатель ИИ модели, Исследователь',
                       desc: "В рамках работы над магистерской диссертацией Zhirui обучил нейронную сеть на базе Swin Transformer выделять из фотографии головы кошки или собаки вектор признаков, специфичных для каждой особи. Эта модель в данный момент используется в системе."
                     },
@@ -137,7 +137,7 @@ export const resources = {
             },
             about:{
                 section: "Questions & Answers",
-                kashtankaTeam: "Kashtanka team",
+                kashtankaTeam: "Kashtanka Team",
                 team: {
                   collapseTeam: "Collapse the team",
                   dmitry: {
@@ -156,19 +156,19 @@ export const resources = {
                       desc: "Nikolay is a scientific advisor of master and PhD students involved in the project. Organizes research talks and curates research directions. Nikolay & Vyacheslav created a dataset for training and evaluation of pet retrieval models. They also created evaluation scripts and the leaderboard."
                   },
                   zhirui: {
-                    name: 'Zhirui',
+                    name: 'Zhirui Zhou',
                     title: 'AI model creator, Researcher',
                     desc: "During the masters thesis preparation, Zhirui trained a Swin Transformer based neural network model to extract unique pet identity visual features. The model is used in the production system now."
                   },
                   tee: {          
                     name: 'Tee, Yu Shiang',
                     title: 'AI model creator, Researcher',
-                    desc: "During the masters thesis preparation Tee, Yu Shiang trained the YoloV5 Nueral Network model to extract a bounding box of cat and dog heads from photos. The model is used in the production system now."
+                    desc: "During the masters thesis preparation Tee, Yu Shiang trained the YoloV5 Neural Network model to extract a bounding box of cat and dog heads from photos. The model is used in the production system now."
                   },
                   vyacheslav: {
                     name: 'Vyacheslav Stroev',
                     title: 'Researcher',
-                    desc: "During the PhD thesis perparation Vyacheslav created a dataset for training and evaluation of pet retrieval models. Created evaluation scripts and the leaderboard. Trained BLIP-based models of pet retrieval."
+                    desc: "During the PhD thesis preparation Vyacheslav created a dataset for training and evaluation of pet retrieval models. Created evaluation scripts and the leaderboard. Trained BLIP-based models of pet retrieval."
                   },
                   maria: {
                     name: 'Maria Eliseeva',
