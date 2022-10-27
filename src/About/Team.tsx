@@ -9,6 +9,7 @@ import TeePhotoUrl from './img/team/Tee.jpg'
 import LucyPhotoUrl from './img/team/Lucy.webp'
 import NikolayPhotoUrl from './img/team/Nikolay.webp'
 import VyachecslavPhotoUrl from './img/team/Vyacheslav.webp'
+import ZhiruiPhotoUrl from './img/team/Zhirui.webp'
 
 type TeamMember = {
     i18nKey:string
@@ -31,7 +32,8 @@ const teamMembers: TeamMember[] =
             ImageURL: NikolayPhotoUrl,
         },
         {
-            i18nKey: "zhirui"
+            i18nKey: "zhirui",
+            ImageURL: ZhiruiPhotoUrl
         },
         {
             i18nKey: "tee",
