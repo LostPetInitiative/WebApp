@@ -1,0 +1,15 @@
+@import "../App";
+
+div.countTileContainer {
+    background-color: $colorBasic;
+    margin: 0 8px;
+    padding: 0 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+}
+
+div.countTileContainer p {
+    color: $colorLight;
+    margin-left: 8px;
+}
