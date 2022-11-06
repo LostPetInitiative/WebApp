@@ -105,7 +105,7 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
                     <div className={"cardComment " + cardTypeClass(card.cardType)}>
                         <div className={"linkToSource " + cardTypeClass(card.cardType)}>
                             <div className="linkToSourceContainer">
-                                <a href={card.provenanceURL} target="_BLANK" rel="external">
+                                <a href={card.provenanceURL} target="_BLANK" rel="external noopener">
                                     {cardSource(card.namespace)}
                                     <span className="linkToSourceSpan"></span></a>                         
                             </div>
