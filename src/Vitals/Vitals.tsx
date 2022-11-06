@@ -48,7 +48,7 @@ function CountTile(props:{iconURL:string, partnerLink:string, count:number}) {
     if (!count) return null;
     const countStr = count.toLocaleString("en").replace(','," ")
     return (
-        <a href={partnerLink} target="_blank">
+        <a href={partnerLink} target="_blank" rel="noopener">
         <div key={partnerLink} className="countTileContainer">
             <img src={iconURL} alt={partnerLink} title={partnerLink} width="25px" height="25px"/>
             <p >{countStr}</p>
