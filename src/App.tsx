@@ -9,6 +9,7 @@ import * as RestCardStorage from "./apiClients/RestApiCardStorage";
 import SolrGatewaySearcher from "./apiClients/SolrGatewaySearch"
 import Landing from "./Landing";
 import LatestCards from "./LatestCardsPreview"
+import {VitalsPage} from "./Vitals/Vitals"
 import Faq from "./About/Faq"
 import Header from "./Header"
 import MatchesBoard from "./MatchesBoard"
@@ -103,12 +104,21 @@ import CompareAbPale from './img/menus/compare_ab_pale.png'
 
 import QuestionsOrange from './img/menus/questions_orange.png'
 import QuestionsPale from './img/menus/questions_pale.png'
+
+import VitalsOrange from './img/menus/vitals_orange.svg'
+import VitalsPale from './img/menus/vitals_pale.svg'
+
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Spinner, SpinnerSize, ThemeProvider } from "@fluentui/react";
 import { kashtankaTheme } from "./Theme";
 import { useTranslation } from "react-i18next";
 
 function Menu() {
+  const {t} = useTranslation()
+  const boardLocStr = t("menu.board")
+  const compLocStr = t("menu.AB")
+  const qnaLocStr = t("menu.qna")
+  const vitalsLocStr = t("menu.vitals")
   return (
     <div id="leftColumnMenu">
       <div id="appStateMenu">
@@ -117,22 +127,28 @@ function Menu() {
             <img id="headerLogo" alt="Логотип Каштанки" src={KashtankaLogo}></img>
           </NavLink>
         </div>
-        <NavLink to="/board" activeClassName="activePage">
+        <NavLink to="/board" activeClassName="activePage" title={boardLocStr}>
           <div className="menuItem">
-            <img alt='Доска карточек' className="active" src={TrelloLogoOrange} />
-            <img alt='Доска картоек' className="inactive" src={TrelloLogoPale} />
+            <img alt={boardLocStr} className="active" src={TrelloLogoOrange} />
+            <img alt={boardLocStr} className="inactive" src={TrelloLogoPale} />
           </div>
         </NavLink>
-        <NavLink to="/candidatesReview/" activeClassName="activePage" title="Сравнение объявлений">
+        <NavLink to="/candidatesReview/" activeClassName="activePage" title={compLocStr}>
           <div className="menuItem">
-            <img alt='Сравнение объявлений' className="active" src={CompareAbOrange} />
-            <img alt='Сравнение объявлений' className="inactive" src={CompareAbPale} />
+            <img alt={compLocStr} className="active" src={CompareAbOrange} />
+            <img alt={compLocStr} className="inactive" src={CompareAbPale} />
           </div>
         </NavLink>
-        <NavLink to="/faq" activeClassName="activePage" title="Вопросы и ответы">
+        <NavLink to="/faq" activeClassName="activePage" title={qnaLocStr}>
           <div className="menuItem">
-            <img alt='Вопросы и ответы' className="active" src={QuestionsOrange} />
-            <img alt='Вопросы и ответы' className="inactive" src={QuestionsPale} />
+            <img alt={qnaLocStr} className="active" src={QuestionsOrange} />
+            <img alt={qnaLocStr} className="inactive" src={QuestionsPale} />
+          </div>
+        </NavLink>
+        <NavLink to="/vitals" activeClassName="activePage" title={vitalsLocStr}>
+          <div className="menuItem">
+            <img alt={vitalsLocStr} className="active" src={VitalsOrange} />
+            <img alt={vitalsLocStr} className="inactive" src={VitalsPale} />
           </div>
         </NavLink>
       </div >
@@ -184,6 +200,9 @@ function App() {
               </Route>
               <Route path="/faq">
                 <Faq />
+              </Route>
+              <Route path="/vitals">
+                <VitalsPage solrGatewayURL={solrGatewayURL} />
               </Route>
               <Route path="/">
                 <LandingWithLatestCards />

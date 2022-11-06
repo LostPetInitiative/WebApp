@@ -7,6 +7,12 @@ export const resources = {
         translation: {
             kashtanka: "Каштанка",
             title: "Каштанка - автоматический поиск потерянных и найденных домашних животных",
+            menu: {
+              board: "Доска карточек",
+              qna: "Вопросы и ответы",
+              AB: "Сравнение объявлений",
+              vitals: "Показатели работы системы"
+            },
             common: {
               loading:"Загрузка...",
               distance: "Расстояние",
@@ -88,6 +94,15 @@ export const resources = {
                       desc: "В рамках работы над магистерской диссертацией Мария работала над средствами разметки данных, самой разметкой данных для машинного обучения, а также анализом распределения данных."
                     }
                 }
+            },
+            "vitals":{
+              "chartTitle": "Сообщений проанализировано по дням",
+              "hAxisTitle": "День",
+              "vAxisTitle": "Количество проанализированных сообщений",
+              "totalCardsPrefix": "Поиск осуществляется по",
+              "totalCardsSuffix": "сообщениям",
+              "inParticular": "В частности",
+              "from": "из"
             }
         }
       },
@@ -95,6 +110,12 @@ export const resources = {
         translation: {
             kashtanka: "Kashtanka",
             title: "Kashtanka - AI powered search of lost and found pets",
+            menu: {
+              board: "Card board",
+              qna: "Questions & Answers",
+              AB: "Cards comparison",
+              vitals: "System Health & Stats"
+            },
             common: {
               loading:"Loading...",
               distance: "Distance",
@@ -175,8 +196,17 @@ export const resources = {
                     title: 'Researcher',
                     desc: "During the masters thesis preparation Maria organized data annotation process, annotated data for machine learning and carried out data analysis."
                   }
+              },
             },
-        }
+            "vitals":{
+              "chartTitle": "Crawled cards per day",
+              "hAxisTitle": "Day",
+              "vAxisTitle": "Processed card count",
+              "totalCardsPrefix": "The search is performed over",
+              "totalCardsSuffix": "cards",
+              "inParticular": "In particular",
+              "from": "from"
+            }
       }
     }
 } as const;

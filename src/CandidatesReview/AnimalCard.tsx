@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./AnimalCard.scss"
 import * as DataModel from "../DataModel";
+import * as urls from "../urls"
 import {CarouselImgViewer} from "./CarouselImgViewer";
 import { useTranslation } from "react-i18next";
 
@@ -56,14 +57,21 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
         var url: string = "./img/logo.png";
         var title: string = "";
 
+        if(cardSource.startsWith("vk-")) {
+            url=urls.VkNSKIconURL
+            title="vk group"
+        }
         switch (cardSource) {
             case "pet911ru":
-                url = "https://pet911.ru/favicon.ico";
+                url = urls.Pet911IconURL;
                 title = "pet911.ru";
                 break;
             case "poiskzooru":
-                url = "https://poiskzoo.ru/favicon.ico";
+                url = urls.PoiskzooIconURL;
                 title = "poiskzoo.ru";
+                break;
+            case "vk-poterjashkansk":
+                url = urls.VkNSKIconURL;
                 break;
         }
         
