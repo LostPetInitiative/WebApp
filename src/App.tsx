@@ -185,6 +185,7 @@ function App() {
   return (
     <ThemeProvider applyTo='body' theme={kashtankaTheme}>
       <Router>
+      <React.Suspense fallback={<p>loading...</p>}>
         {(!development) &&
           <Tracker trackerHostName={"matomo.grechka.family"} />
         }
@@ -210,6 +211,7 @@ function App() {
             </Switch>
           </div>
         </div>
+      </React.Suspense>
       </Router>
     </ThemeProvider>
   );

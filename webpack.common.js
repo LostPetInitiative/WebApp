@@ -2,7 +2,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.tsx',
+  entry: {
+    'app': { import: './src/index.tsx', dependOn: ['react-vendors','ui-vendors'], },
+    'react-vendors': ['react', 'react-dom'],
+    'ui-vendors': {import: ['@fluentui/react'], dependOn: ['react-vendors']},
+  },
+  //entry: './src/index.tsx',
   mode: 'none',
   module: {
     rules: [
@@ -50,8 +55,15 @@ module.exports = {
     }),
   ],
   output: {
-    filename: 'bundle.[contenthash].js',
+    filename: 'bundle.[name].[contenthash].js',
+    chunkFilename: 'chunk.[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     clean: true, 
+  },
+  optimization: {
+    usedExports: true,
+    splitChunks: {
+      chunks: 'all' 
+    }
   },
 };
