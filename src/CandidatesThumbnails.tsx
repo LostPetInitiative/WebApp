@@ -29,14 +29,24 @@ export function AnimalCardThumbnail(props: {
     if(props.refCard != null) {
         similarity = -1.0;
         for(const refIm of props.refCard.photos) {
-            if(!Object.keys(refIm.featureVectors).some(x => x === _ImageEmbeddingToUse))
+            if(!Object.keys(refIm.featureVectors).some(x => x === _ImageEmbeddingToUse)) {
+                console.warn(`Reference image ${refIm.uuid} does not have needed feature vector ${_ImageEmbeddingToUse}`)
                 continue;
+            }
             for(const im of props.card.photos) {
-                if(!Object.keys(im.featureVectors).some(x => x === _ImageEmbeddingToUse))
+                if(!Object.keys(im.featureVectors).some(x => x === _ImageEmbeddingToUse)) {
+                    console.warn(`Reference image ${im.uuid} does not have needed feature vector ${_ImageEmbeddingToUse}`)
                     continue;
+                }
+                const refimFeatureVector = refIm.featureVectors[_ImageEmbeddingToUse]
+                const imFeatureVector = im.featureVectors[_ImageEmbeddingToUse]
+                if(refimFeatureVector.length != imFeatureVector.length) {
+                    console.warn(`Feature vector ${_ImageEmbeddingToUse} has different length: ref image ${refimFeatureVector.length}; image ${imFeatureVector.length}`)
+                    continue;
+                }
                 const curSim = Comp.cosSimilarity(
-                    refIm.featureVectors[_ImageEmbeddingToUse],
-                    im.featureVectors[_ImageEmbeddingToUse])
+                    refimFeatureVector,
+                    imFeatureVector)
                 similarity = curSim > similarity ? curSim : similarity;
             }
         }
@@ -121,7 +131,7 @@ export function AnimalCardThumbnailById(props: AnimalCardThumbnailByIdProps) {
     },[namespace,localID, cardStorage])
 
     const loadingLocStr = t("common.loading")
-    const unexistentLocStr = t("cards.cardNotFound")
+    const unexistentLocStr = t("common.cardNotFound")
 
     const thumbnailContainerClassName = "thumbnail-container" + (isAccented ? " accent" : "")
     
