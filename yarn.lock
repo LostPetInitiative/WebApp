@@ -1688,9 +1688,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react@npm:^8.99.1":
-  version: 8.99.1
-  resolution: "@fluentui/react@npm:8.99.1"
+"@fluentui/react@npm:^8.100.0":
+  version: 8.100.0
+  resolution: "@fluentui/react@npm:8.100.0"
   dependencies:
     "@fluentui/date-time-utilities": ^8.5.2
     "@fluentui/font-icons-mdl2": ^8.5.2
@@ -1711,7 +1711,7 @@ __metadata:
     "@types/react-dom": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
     react-dom: ">=16.8.0 <19.0.0"
-  checksum: 8984146646af72bf266f03d05c577ebe77bbdaa137340dd5418623188a47424c9f3209959f2b4044211cb7e7da954f4d498a2ac39a399e0ff2cbf8692a97715f
+  checksum: fc5636d21696ba42784ce6f8b35334211201c7d075d1af3ae1e751abd1305cdcc3d2029b5179f501e321a3f8643c124812d35bcb6c50430d2ca59ca2320f9054
   languageName: node
   linkType: hard
 
@@ -2748,7 +2748,7 @@ __metadata:
     "@babel/preset-react": ^7.18.6
     "@babel/preset-typescript": ^7.18.6
     "@fluentui/font-icons-mdl2": ^8.5.2
-    "@fluentui/react": ^8.99.1
+    "@fluentui/react": ^8.100.0
     "@types/jest": ^29.2.0
     "@types/react": ^18.0.24
     "@types/react-dom": ^18.0.8
