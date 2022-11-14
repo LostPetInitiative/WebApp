@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@fluentui/font-icons-mdl2": "^8.5.2",
-    "@fluentui/react": "^8.100.0",
+    "@fluentui/react": "^8.101.0",
     "i18next": "^22.0.2",
     "i18next-browser-languagedetector": "^7.0.0",
     "immutable": "^4.1.0",
