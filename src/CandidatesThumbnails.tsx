@@ -314,7 +314,7 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
         
     const requestedFullID = (referenceCard == null) ? "" : (referenceCard.namespace + "/" + referenceCard.id);
 
-    const searchMode:SimilarSearchMode = determineSearchMode(referenceCard);
+    const searchMode:SimilarSearchMode = React.useMemo(() => determineSearchMode(referenceCard),[referenceCard])
 
     const relevantCards = extractRelevantCards(searchState, referenceCard);
     const errorMessage:string = extractErrorMessage(searchState);

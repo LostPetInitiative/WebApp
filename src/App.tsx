@@ -162,6 +162,13 @@ function LandingWithLatestCards() {
   const navigateToSpecificCard = (fullID: string) => {
     history.push("/candidatesReview/" + fullID)
   }
+  React.useEffect(() => {
+    console.log("LandingWithLatestCards mounted")
+    return () => {
+      console.log("LandingWithLatestCards unmounted")
+    }
+  },[])
+  console.log("LandingWithLatestCards rendering")
 
   return (
     <div>
@@ -182,6 +189,15 @@ function LandingWithLatestCards() {
 }
 
 function App() {
+
+  React.useEffect(() => {
+    console.log("App mounted")
+    return () => {
+      console.log("App unmounted")
+    }
+  },[])
+  console.log("App render")
+
   return (
     <ThemeProvider applyTo='body' theme={kashtankaTheme}>
       <Router>

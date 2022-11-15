@@ -30,7 +30,11 @@ function LatestCardsPreview(props: PropsType)  {
             console.error(`Failed to load cards: ${err}`)
             setFoundCards([])
         });
+        return () => {
+            console.log("Fetching latest unmounting")
+        }
     },[cardsToShow, cardsTypeToShow, searcher])
+//},[])
 
     
     const handleThumbnailClick = (fullID: string) => {
