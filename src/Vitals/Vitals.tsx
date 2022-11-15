@@ -114,7 +114,7 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
 
         if(perDayPet911) addDataSourceToDataTable(perDayPet911,"pet911.ru");
         if(perDayPoiskZoo) addDataSourceToDataTable(perDayPoiskZoo,"Poiskzoo.ru");
-        if(perDayVkNsk) addDataSourceToDataTable(perDayPoiskZoo,"vk.com/poterjashkansk");
+        if(perDayVkNsk) addDataSourceToDataTable(perDayVkNsk,"vk.com/poterjashkansk");
         
         result.push(headerRow)
         result.push(...datesData)
