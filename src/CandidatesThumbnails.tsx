@@ -9,7 +9,7 @@ import "./CandidatesThumbnails.scss"
 import * as im from "immutable"
 import {_ImageEmbeddingToUse} from "./consts"
 
-import {Stack, Toggle, Spinner, StackItem, Text, SpinnerSize} from '@fluentui/react'
+import {Spinner, SpinnerSize} from '@fluentui/react'
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 
@@ -25,7 +25,7 @@ export function AnimalCardThumbnail(props: {
 }) {
     const card = props.card;
 
-    var similarity:undefined | number = undefined
+    let similarity:undefined | number = undefined
     if(props.refCard != null) {
         similarity = -1.0;
         for(const refIm of props.refCard.photos) {
@@ -52,7 +52,7 @@ export function AnimalCardThumbnail(props: {
         }
     }
 
-    var geoString;
+    let geoString;
     if (props.refCard !== null) {
         const card1 = props.card.location
         const card2 = props.refCard.location
@@ -61,7 +61,7 @@ export function AnimalCardThumbnail(props: {
     } else
         geoString = props.card.location.address
 
-    var timeString
+    let timeString
     if (props.refCard !== null) {
         const date1 = props.card.eventTime
         const date2 = props.refCard.eventTime
@@ -213,7 +213,7 @@ function extractRelevantCards(state: SearchState, referenceCard?: DataModel.Anim
             if(!ISearch.IsSimilarCardResultSuccessful(state.found))
                 return [];
             return state.found;
-        case SearchStateEnum.SearchingViaImageFeatures:
+        case SearchStateEnum.SearchingViaImageFeatures: {
             const referenceImageVectors:number[][] = 
                 (!referenceCard) ? [] :
                 referenceCard.photos
@@ -221,7 +221,7 @@ function extractRelevantCards(state: SearchState, referenceCard?: DataModel.Anim
                     .filter(x => x != undefined);
 
             const maxSimMap: Map<string,number> = new Map();
-            for(const [num,images] of state.found) {
+            for(const [,images] of state.found) {
                 // we need to build map: cardID -> similarity
                 if(ISearch.IsSimilarImageResultSuccessful(images))
                     for(const im of images) {
@@ -229,7 +229,7 @@ function extractRelevantCards(state: SearchState, referenceCard?: DataModel.Anim
                         const prevSimForTheCard = maxSimMap.has(fullID) ? maxSimMap.get(fullID) : -1.0;
                         const newMaxSim = referenceImageVectors.reduce(
                             (acc, refVec) => {
-                                const sim = Comp.cosSimilarity(im[_ImageEmbeddingToUse],refVec)
+                                const sim = Comp.cosSimilarity(im[_ImageEmbeddingToUse] as number[],refVec)
                                 return acc > sim ? acc : sim;
                             }, prevSimForTheCard)
                             
@@ -246,9 +246,11 @@ function extractRelevantCards(state: SearchState, referenceCard?: DataModel.Anim
             result.sort((a,b) => b.similarity - a.similarity)
             
             return result;
-        default:
-            const n:never = state;
-            throw "exhaustive checks failed"
+        }
+        default: {
+            const _:never = state;
+            throw "exhaustive checks failed" + _
+        }
     }
 }
 
@@ -263,7 +265,7 @@ function extractErrorMessage(state:SearchState) : string|undefined {
                 return undefined;
             else
                 return state.found.ErrorMessage;
-        case SearchStateEnum.SearchingViaImageFeatures:
+        case SearchStateEnum.SearchingViaImageFeatures: {
             const errMsgs:string[] = [];
             for(const v of state.found.values()) {
                 if(ISearch.IsSimilarImageResultSuccessful(v))
@@ -274,29 +276,33 @@ function extractErrorMessage(state:SearchState) : string|undefined {
                 return undefined;
             else
                 return errMsgs.join(", ");
-        default:
-            const v:never = state;
-            throw "compile time exhaustive check";
+        }
+        default: {
+            const _:never = state;
+            throw "compile time exhaustive check" + _;
+        }
     }
 }
 
-function getSearchCompletnessFraction(state:SearchState): number {
-    switch(state.type) {
-        case SearchStateEnum.None:
-            return 1.0;
-        case SearchStateEnum.SearchingViaCardFeatures:
-            if(state.found === "InProgress")
-                return 0.0;
-            return 1.0;        
-        case SearchStateEnum.SearchingViaImageFeatures:
-           return state.found.count() / state.imagesToSearchCount;
-        default:
-            const n:never = state;
-            throw "exhaustive checks failed"
-    }
-}
+// function getSearchCompletnessFraction(state:SearchState): number {
+//     switch(state.type) {
+//         case SearchStateEnum.None:
+//             return 1.0;
+//         case SearchStateEnum.SearchingViaCardFeatures:
+//             if(state.found === "InProgress")
+//                 return 0.0;
+//             return 1.0;        
+//         case SearchStateEnum.SearchingViaImageFeatures:
+//            return state.found.count() / state.imagesToSearchCount;
+//         default: {
+//             const _:never = state;
+//             throw "exhaustive checks failed" + _
+//         }
+//     }
+// }
 
 export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
+    const {selectionChanged, referenceCard, searcher} = props;
     const [currentSelectionIdx, setCurrentSelectionIdx] = useState<number>(0);
     const [searchState, setSearchState] = useState<SearchState>({type: SearchStateEnum.None});
 
@@ -304,17 +310,14 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
 
     const isSearchInProgress = (searchState.type == SearchStateEnum.SearchingViaCardFeatures && searchState.found === "InProgress") ||
         (searchState.type == SearchStateEnum.SearchingViaImageFeatures && searchState.found.count() < searchState.imagesToSearchCount)
-    const searchPercentage = getSearchCompletnessFraction(searchState) * 100.0;
+    //const searchPercentage = getSearchCompletnessFraction(searchState) * 100.0;
         
-    const requestedFullID = (props.referenceCard == null) ? "" : (props.referenceCard.namespace + "/" + props.referenceCard.id);
+    const requestedFullID = (referenceCard == null) ? "" : (referenceCard.namespace + "/" + referenceCard.id);
 
-    const searchMode:SimilarSearchMode = determineSearchMode(props.referenceCard);
+    const searchMode:SimilarSearchMode = determineSearchMode(referenceCard);
 
-    const relevantCards = extractRelevantCards(searchState, props.referenceCard);
+    const relevantCards = extractRelevantCards(searchState, referenceCard);
     const errorMessage:string = extractErrorMessage(searchState);
-
-    const [farFilterEnabled, setFarFilterEnabled] = useState(true)
-    const [longAgoFilterEnabled, setLongAgoFilterEnabled] = useState(true)
 
     React.useEffect(() => {
         // trying to set proper selected relevant card by looking for the desired card
@@ -331,6 +334,8 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
 
     const backgroundFetchId = React.useRef<number>(0)
 
+    const searchModeType = searchMode.type
+
     React.useEffect(() => {
         // background similar cards fetch
         backgroundFetchId.current += 1;
@@ -338,53 +343,29 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
         const snapshotedBackgroundFetchId = backgroundFetchId.current; // to be checked in promise continutations
 
         setCurrentSelectionIdx(0);
-        const card = props.referenceCard;
+        const card = referenceCard;
 
-        switch(searchMode.type) {
+        switch(searchModeType) {
             case SimilarSearchModeEnum.CardFeatures:
                 throw "not implemented";               
-                /*
-                const featuresIdent = searchMode.featuresIdent;                 
-                console.log(`initiating search of relevant cards by card features \"${searchMode.featuresIdent}\" for ${requestedFullID}`);
-                setSearchState({
-                    type: SearchStateEnum.SearchingViaCardFeatures,
-                    found: "InProgress"
-                });
-                props.searcher.GetRelevantCardsByCardFeatures(card.location.lat, card.location.lon,
-                marshalAnimal(card.animal),
-                marshalEventType(card.cardType),
-                card.eventTime,
-                featuresIdent,
-                card.features[featuresIdent]).then(relevantSearchRes => {
-                    if(snapshotedBackgroundFetchId !== backgroundFetchId.current) {
-                        console.warn(`Discarding stale search by card features num ${snapshotedBackgroundFetchId}`);
-                        return;
-                    }                    
-                    setSearchState({
-                        type: SearchStateEnum.SearchingViaCardFeatures,
-                        found: relevantSearchRes
-                    });
-                }, error => console.error(`Search promise rejected: ${error}`));
-                break;
-                */
             case SimilarSearchModeEnum.ImageFeatures:
                 // for each image issue a request                                
                 setSearchState({
                     type: SearchStateEnum.SearchingViaImageFeatures,
-                    imagesToSearchCount: props.referenceCard.photos.length,
+                    imagesToSearchCount: referenceCard.photos.length,
                     found: im.Map<number,ISearch.FoundSimilarImage[]>()
                 });
 
-                props.referenceCard.photos.forEach((image,imNum) => {
-                    console.log(`Searching image similarities \"${searchMode.featuresIdent}\" for ${card.namespace}/${card.id}/${imNum}`)
-                    props.searcher.GetRelevantImagesByImageFeatures(card.location.lat, card.location.lon,
+                referenceCard.photos.forEach((image,imNum) => {
+                    console.log(`Searching image similarities "${searchMode.featuresIdent}" for ${card.namespace}/${card.id}/${imNum}`)
+                    searcher.GetRelevantImagesByImageFeatures(card.location.lat, card.location.lon,
                         marshalAnimal(card.animal),
                         marshalEventType(card.cardType),
                         card.eventTime,
                         searchMode.featuresIdent,
                         image.featureVectors[searchMode.featuresIdent],
-                        farFilterEnabled,
-                        longAgoFilterEnabled
+                        true,
+                        true
                         ).then(res => {
                             console.log("image search continuation",res)
                             if(snapshotedBackgroundFetchId !== backgroundFetchId.current) {
@@ -414,21 +395,22 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
                 break;
             case SimilarSearchModeEnum.Off:
                 break;
-            default:
-                const n:never = searchMode; // compile time exhaustive check
-                throw "Unsupported similar card search type";
+            default: {
+                const _:never = searchMode; // compile time exhaustive check
+                throw "Unsupported similar card search type" + _;
+            }
         }
-    },[requestedFullID, searchMode.type, props.searcher, farFilterEnabled, longAgoFilterEnabled])
+    },[requestedFullID, searchModeType, searcher, referenceCard, searchMode])
 
-    const handleThumbnailSelection = React.useCallback((fullID: string, e: (React.MouseEvent | null)) => {
-        if (props.selectionChanged !== null) {
-            props.selectionChanged(fullID)
+    const handleThumbnailSelection = React.useCallback((fullID: string) => {
+        if (selectionChanged !== null) {
+            selectionChanged(fullID)
         }
         const foundIdx = relevantCards.findIndex(card => (card.namespace + "/" + card.id) === fullID)
         if (foundIdx !== -1) {
             setCurrentSelectionIdx(foundIdx);
         }        
-    },[props.selectionChanged, relevantCards]);
+    },[selectionChanged, relevantCards]);
 
 
     const wheel = (e:React.WheelEvent<HTMLDivElement>) => {
@@ -447,10 +429,10 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
         const genPreview = ([foundCard, isAccent]: [ISearch.FoundSimilarDoc, boolean]) => {
             const arrayKey = foundCard.namespace + "/" + foundCard.id
             return (
-                <div onClick={(e) => handleThumbnailSelection(arrayKey, e)} key={arrayKey}>
+                <div onClick={() => handleThumbnailSelection(arrayKey)} key={arrayKey}>
                     <AnimalCardThumbnailById
                         key={arrayKey}
-                        refCard={props.referenceCard}
+                        refCard={referenceCard}
                         isAccented={isAccent}
                         cardStorage={props.cardStorage}
                         namespace={foundCard.namespace}
@@ -460,18 +442,18 @@ export function CandidatesThumbnails(props: CandidatesThumbnailsPropsType) {
 
         const loadingIndication = isSearchInProgress ? <Spinner label={lookingForMatchesLocStr}></Spinner> : null;
         const effectiveSelectedIdx = relevantCards.length>0 ? (currentSelectionIdx % relevantCards.length) : 0;
-        var previews = (relevantCards.length>0 || isSearchInProgress) ?
+        const previews = (relevantCards.length>0 || isSearchInProgress) ?
             relevantCards.map((card, idx) => [card, (idx === effectiveSelectedIdx)] as [ISearch.FoundSimilarDoc, boolean]).map(genPreview) :
-            [<p>Нет совпадений =(</p>]
+            [<p key="no_matches">Нет совпадений =(</p>]
         
         return <>
             {loadingIndication}
             <div className="thumbnails-container">{previews}</div>
             </>        
-    },[relevantCards, props.referenceCard, props.cardStorage, currentSelectionIdx, isSearchInProgress, searchPercentage, lookingForMatchesLocStr])    
+    },[relevantCards, referenceCard, props.cardStorage, currentSelectionIdx, isSearchInProgress, lookingForMatchesLocStr, handleThumbnailSelection])    
 
     
-    if (props.referenceCard !== null) {        
+    if (referenceCard !== null) {        
         const possibleMatchesLocStr = t("candidatesReview.possibleMatches")
         return (
             <div className="page" onWheel={wheel}>

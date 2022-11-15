@@ -12,8 +12,8 @@ import LatestCards from "./LatestCardsPreview"
 import {VitalsPage} from "./Vitals/Vitals"
 import Faq from "./About/Faq"
 import Header from "./Header"
-import MatchesBoard from "./MatchesBoard"
-import Tracker from "./MatomoTracker"
+import {MatchBoard} from "./MatchesBoard"
+import {Tracker} from "./MatomoTracker"
 import {
   HashRouter as Router,
   Switch,
@@ -28,8 +28,8 @@ import { initializeIcons } from '@fluentui/font-icons-mdl2';
 initializeIcons();
 
 const development = window.location.hostname === "localhost"
-var cardStorageURL: string
-var solrGatewayURL: string
+let cardStorageURL: string
+let solrGatewayURL: string
 if (development) {
   console.log("Running in development mode")
   // cardStorageURL = "http://10.0.4.12:31642"
@@ -193,11 +193,17 @@ function App() {
           <Menu />
           <div className="AppModeViewer">
             <Switch>
-              <Route path="/candidatesReview/:ns1/:id1/:ns2/:id2" children={<SpecificCandidatesReview />} />
-              <Route path="/candidatesReview/:ns1/:id1" children={<SpecificCandidatesReview />} />
-              <Route path="/candidatesReview" children={<LatestFoundCardCandidatesReview />} />
+              <Route path="/candidatesReview/:ns1/:id1/:ns2/:id2">
+                <SpecificCandidatesReview />
+              </Route>
+              <Route path="/candidatesReview/:ns1/:id1">
+                <SpecificCandidatesReview />
+              </Route>
+              <Route path="/candidatesReview">
+                <LatestFoundCardCandidatesReview />
+              </Route>
               <Route path="/board">
-                <MatchesBoard />
+                <MatchBoard />
               </Route>
               <Route path="/faq">
                 <Faq />

@@ -10,6 +10,7 @@ steps:
   - yarn
   - yarn build
   - yarn test
+  - yarn lint .
 - name: build & push docker image (main branch)
   image: plugins/docker
   when:

@@ -3,7 +3,7 @@ import * as React from "react";
 import Header from "../Header";
 import { Chart } from "react-google-charts";
 import { useTranslation } from "react-i18next";
-import { List, Spinner, SpinnerSize } from "@fluentui/react";
+import { Spinner, SpinnerSize } from "@fluentui/react";
 import * as urls from '../urls'
 
 import "./Vitals.scss"
@@ -21,9 +21,9 @@ function useNamespaceVitals(solrGatewayURL:string, namespace: string) {
                 fetched.json().then(parsed => {
                     // console.log("fetched", parsed)
                     setTotalCount(parsed.response.numFound)
-                    const arr:Array<any> = parsed.facet_counts.facet_ranges.card_creation_time.counts
+                    const arr:Array<string> = parsed.facet_counts.facet_ranges.card_creation_time.counts
                     const resMap:Map<string,number> = new Map<string,number>()
-                    for (var i=0;i < arr.length/2;i++) {
+                    for (let i=0;i < arr.length/2;i++) {
                         resMap.set(arr[i*2], parseInt(arr[i*2+1]))
                     }
                     setCountPerDay(resMap)
@@ -48,7 +48,7 @@ function CountTile(props:{iconURL:string, partnerLink:string, count:number}) {
     if (!count) return null;
     const countStr = count.toLocaleString("en").replace(','," ")
     return (
-        <a href={partnerLink} target="_blank" rel="external noopener">
+        <a href={partnerLink} target="_blank" rel="external noopener noreferrer">
         <div key={partnerLink} className="countTileContainer">
             <img src={iconURL} alt={partnerLink} title={partnerLink} width="25px" height="25px"/>
             <p >{countStr}</p>
@@ -77,7 +77,7 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
 
         const datesData:Array<Array<string|number>> = []
 
-        var addDataSourceToDataTable = (perDayCountsDict:Map<string,number>, crawlerName: string) => {
+        const addDataSourceToDataTable = (perDayCountsDict:Map<string,number>, crawlerName: string) => {
             // Example of needed schema:
             // we have the first column: day
             // other columns: counts
@@ -93,7 +93,7 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
             
 
             const keys = Array.from(perDayCountsDict.keys()).sort()
-            for (var i=0;i< keys.length; i++){
+            for (let i=0;i< keys.length; i++){
                 const key = keys[i]
                 const d = new Date(key)
                 const dateStr = d.toLocaleDateString()
@@ -120,7 +120,7 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
         result.push(...datesData)
         return result
         }
-    ,[perDayPet911, perDayPoiskZoo])
+    ,[perDayPet911, perDayPoiskZoo, perDayVkNsk])
 
     const totalCards = (totalCountPet911??0) + (totalCountPoiskZoo??0) + (totalCountVkNsk??0)
 
@@ -137,7 +137,7 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
         },
         };
 
-    var chartArea : JSX.Element = null
+    let chartArea : JSX.Element = null
     if (data.length>1) {
         const totalCardsPrefixLocStr = t("vitals.totalCardsPrefix")
         const totalCardsSuffixLocStr = t("vitals.totalCardsSuffix")

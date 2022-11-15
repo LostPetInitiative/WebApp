@@ -1,7 +1,8 @@
 import * as React from 'react'
 
-class Tracker extends React.Component<{trackerHostName:string},{}> {
-    componentDidMount() {
+export function Tracker(props:{trackerHostName:string}){
+    const {trackerHostName } = props;
+    React.useEffect(() => {
         const script = document.createElement("script");
         script.innerHTML = `
             console.log("matomo tracker loading...")
@@ -10,7 +11,7 @@ class Tracker extends React.Component<{trackerHostName:string},{}> {
             _paq.push(['trackPageView']);
             _paq.push(['enableLinkTracking']);
             (function() {
-            var u="//${this.props.trackerHostName}/";
+            var u="//${trackerHostName}/";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
             _paq.push(['setSiteId', '1']);
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
@@ -24,11 +25,7 @@ class Tracker extends React.Component<{trackerHostName:string},{}> {
             });`
         script.async = true;
         document.body.appendChild(script);
-    }
-
-    render() {
-        return false
-    }
+    },[trackerHostName])
+    
+    return <></>
 }
-
-export default Tracker;

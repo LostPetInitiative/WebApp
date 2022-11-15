@@ -9,7 +9,7 @@ function AnimalPhotos(props: {photos: DataModel.AnimalPhoto[], selectedInd: numb
   const photoList: JSX.Element[] = [];
   const startWithInd = total > 2 ? selectedInd - 1 : 0;
   const endWithInd = total > 1 ? selectedInd + 1 : startWithInd;
-  for (let i: number = 0, j: number = startWithInd; i < total && j <= endWithInd; i++, j++) {
+  for (let i = 0, j: number = startWithInd; i < total && j <= endWithInd; i++, j++) {
     const realInd = (photos.length + j) % photos.length;
     const image: DataModel.AnimalPhoto = photos[realInd];
     if(j === selectedInd) {

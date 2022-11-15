@@ -24,7 +24,7 @@ function LatestCardsPreview(props: PropsType)  {
         console.log("Loading " + cardsTypeToShow + " (" + cardsToShow + " max count) latest cards")
         setFoundCards(null)
         searcher.GetLatestCards(cardsToShow,cardsTypeToShow).then(cards => {
-            console.log("Loaded " + cards.length + " of " + props.cardsTypeToShow + " (" + props.cardsToShow + " max count) latest cards")
+            console.log("Loaded " + cards.length + " of " + cardsTypeToShow + " (" + cardsToShow + " max count) latest cards")
             setFoundCards(cards)
         }, err => {
             console.error(`Failed to load cards: ${err}`)
@@ -33,7 +33,7 @@ function LatestCardsPreview(props: PropsType)  {
     },[cardsToShow, cardsTypeToShow, searcher])
 
     
-    const handleThumbnailClick = (fullID: string, e: (React.MouseEvent | null)) => {
+    const handleThumbnailClick = (fullID: string) => {
         props.previewClicked?.(fullID)
     }
 
@@ -46,10 +46,10 @@ function LatestCardsPreview(props: PropsType)  {
                 const downloadFailedLocalizedStr = t("downloadFailed")
                 return <p>{downloadFailedLocalizedStr}</p>
             } else {
-                const cardToViewer = (card: ISearch.FoundDoc, idx: number, array: ISearch.FoundDoc[]) => {
+                const cardToViewer = (card: ISearch.FoundDoc) => {
                     const fullID = card.namespace + "/" + card.id
                     return (
-                        <div onClick={(e) => handleThumbnailClick(fullID, e)} key={fullID}>
+                        <div onClick={() => handleThumbnailClick(fullID)} key={fullID}>
                             <AnimalCardThumbnailById
                                 cardStorage={props.cardStorage}
                                 refCard={null}

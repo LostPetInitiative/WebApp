@@ -1,4 +1,3 @@
-import { DefaultButton, Dropdown, IconButton, IContextualMenuProps, IDropdownOption } from "@fluentui/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,7 +17,7 @@ export function LanguageSwitcher() {
     
     const [lang,setLang] = React.useState(() => i18n.resolvedLanguage)
 
-    var curLangIdx = languageOptions.findIndex((e => e.key == lang))
+    let curLangIdx = languageOptions.findIndex((e => e.key == lang))
     if (curLangIdx == -1)
         curLangIdx = 0
     const curLangMeta = languageOptions[curLangIdx] 
@@ -26,7 +25,7 @@ export function LanguageSwitcher() {
     React.useEffect(() => {
         if (lang != i18n.resolvedLanguage)
             i18n.changeLanguage(lang)
-    },[lang,dummy])
+    },[lang, dummy, i18n])
 
 
     return (

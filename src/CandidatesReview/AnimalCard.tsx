@@ -53,9 +53,9 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
     }
 
     function cardSource(cardSource: string) {
-        const intro: string = `| ${t("cardViewer.goToOrig")}`;
-        var url: string = "./img/logo.png";
-        var title: string = "";
+        const intro = `| ${t("cardViewer.goToOrig")}`;
+        let url = "./img/logo.png";
+        let title = "";
 
         if(cardSource.startsWith("vk-")) {
             url=urls.VkNSKIconURL
@@ -105,7 +105,7 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
                     <div className={"cardComment " + cardTypeClass(card.cardType)}>
                         <div className={"linkToSource " + cardTypeClass(card.cardType)}>
                             <div className="linkToSourceContainer">
-                                <a href={card.provenanceURL} target="_BLANK" rel="external noopener">
+                                <a href={card.provenanceURL} target="_BLANK" rel="external noopener noreferrer">
                                     {cardSource(card.namespace)}
                                     <span className="linkToSourceSpan"></span></a>                         
                             </div>

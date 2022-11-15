@@ -1,5 +1,4 @@
 import * as React from "react";
-import Header from "./Header";
 import "./Landing.scss";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -71,15 +70,16 @@ const enText = (
   </div>
 );
 
-function Landing(props: {}) {
-  const { t: tGen, i18n } = useTranslation("translation");
-  const { t } = useTranslation("translation", { keyPrefix: "landing" });
-  React.useEffect(() => {
-    document.title = tGen("title");
-  },[]);
+function Landing() {
+  const { t, i18n } = useTranslation("translation");
+  
+  const titleLocStr = t("title")
 
-  // TODO: can we ensure that the compoent is rerendered upon language change?
-  var text: JSX.Element;
+  React.useEffect(() => {
+    document.title = titleLocStr;
+  },[titleLocStr]);
+
+  let text: JSX.Element;
   switch (i18n.resolvedLanguage) {
     case "ru":
       text = ruText;

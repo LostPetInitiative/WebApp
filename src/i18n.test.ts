@@ -9,8 +9,8 @@ function flattenObjectKeys(o: object | string, prefix:string ,result: string[]) 
         return
 
     const dict = o as {[idx:string]:object}
-    var keys = Object.keys(o)
-    for(var i=0; i< keys.length; i++) {
+    const keys = Object.keys(o)
+    for(let i=0; i< keys.length; i++) {
         const key = keys[i]
         flattenObjectKeys(dict[key],prefix+"."+key,result)
     }

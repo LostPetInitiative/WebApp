@@ -4,7 +4,7 @@ export type FoundDoc = {
 }
 
 export type FoundDocWithFeatures =
-    FoundDoc & {[key:string]: any}
+    FoundDoc & {[key:string]: unknown}
 
 export type FoundImageWithFeatures = 
     FoundDocWithFeatures & {imNum: number}
