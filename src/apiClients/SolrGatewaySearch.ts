@@ -1,4 +1,4 @@
-import { _CassandraImageEmbeddingName, _ImageEmbeddingToUse, _SolrImageEmbeddingName } from "../consts";
+import {_ImageEmbeddingToUse, _SolrImageEmbeddingName } from "../consts";
 import * as ISearch from "./ISearch";
 
 type FoundDocument = {
@@ -7,26 +7,6 @@ type FoundDocument = {
 
 type FoundDocWithFeatures =
     FoundDocument & {[key:string]:number[]}
-
-type FoundDocWithSimilarity = {
-    similarity: number
-} & FoundDocument
-
-type EndOfStreamMarker = {
-    EOF: boolean,
-    RESPONSE_TIME: number,
-    EXCEPTION?: string
-}
-
-type SolrSuccessfulStream = {
-    "result-set": {
-        "docs": (FoundDocWithSimilarity | EndOfStreamMarker)[]
-    }
-}
-
-function isEndOfTheStream(elem: FoundDocWithSimilarity | EndOfStreamMarker): elem is EndOfStreamMarker {
-    return (elem as EndOfStreamMarker).EOF !== undefined;
-}
 
 type SolrSelectResult = {
     response: {
@@ -80,17 +60,17 @@ class SolrGatewaySearch implements ISearch.ISearch {
 
         const queryParamsArray: string[] = []
 
-        for (let key in requestParams) {
-            let value = requestParams[key];
+        for (const key in requestParams) {
+            const value = requestParams[key];
             queryParamsArray.push(key + "=" + value)
         }
         const query = queryParamsArray.join("&")
 
-        var queryStr: string = (query.length > 0) ? ("?" + query) : ""
+        const queryStr: string = (query.length > 0) ? ("?" + query) : ""
 
-        const requstURL = this.latestCardsSearchURL + queryStr;
+        const requestURL = this.latestCardsSearchURL + queryStr;
 
-        var fetchRes = await fetch(requstURL, {
+        const fetchRes = await fetch(requestURL, {
             headers: {
                 'Accept': 'application/json'
             }
@@ -110,7 +90,7 @@ class SolrGatewaySearch implements ISearch.ISearch {
 
             return docs.map(parseId);
         } else {
-            var errorMess = "Non successful error code " + fetchRes.status + " for fetching latest cards: " + fetchRes.statusText;
+            const errorMess = "Non successful error code " + fetchRes.status + " for fetching latest cards: " + fetchRes.statusText;
             console.error(errorMess)
             return [];
         }
@@ -120,7 +100,7 @@ class SolrGatewaySearch implements ISearch.ISearch {
     async GetRelevantImagesByImageFeatures(
         lat: number, lon: number, animal: ISearch.Animal, eventType: ISearch.EventType, EventTime: Date, featuresIdent: string, features: number[],
         filterFar?:boolean, filterLongAgo?:boolean): Promise<ISearch.SimilarImageSearchResult> {
-        var gatewayRequest: GatewayRequest = {
+        const gatewayRequest: GatewayRequest = {
             Lat: lat,
             Lon: lon,
             Animal: animal,
@@ -135,7 +115,7 @@ class SolrGatewaySearch implements ISearch.ISearch {
         // console.log(`Issueing request`)
         // console.log(gatewayRequest)
         // console.log(jsonGatewayRequest)
-        var fetchRes = await fetch(this.matchedImagesSearchURL, {
+        const fetchRes = await fetch(this.matchedImagesSearchURL, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -181,7 +161,7 @@ class SolrGatewaySearch implements ISearch.ISearch {
             // }
             return result;
         } else {
-            var errorMess = "Non successful error code " + fetchRes.status + " for fetching relevant cards: " + fetchRes.statusText;
+            const errorMess = "Non successful error code " + fetchRes.status + " for fetching relevant cards: " + fetchRes.statusText;
             console.error(errorMess)
             return { ErrorMessage: errorMess }
         }

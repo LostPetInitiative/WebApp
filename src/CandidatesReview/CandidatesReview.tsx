@@ -95,15 +95,17 @@ export function CandidatesReview(props: PropsType) {
         }
     },[candCardFullID, cardStorage])
 
+    const titleLocalizedStr = t("title")
+    const titleDescrLocStr = t('candidatesReview.section')
     React.useEffect(() => {
-        document.title = t("title") + ' - '+t('candidatesReview.section')
-      },[]);    
+        document.title = titleLocalizedStr + ' - '+ titleDescrLocStr
+      },[titleLocalizedStr, titleDescrLocStr]);    
 
 
     
     const renderUpperScreen = () => {
-        var leftCardAssignment: TwoCards.CardAssignment;
-        var rightCardAssignment: TwoCards.CardAssignment;
+        let leftCardAssignment: TwoCards.CardAssignment;
+        let rightCardAssignment: TwoCards.CardAssignment;
 
         const mainCardAssignment = cardStateToCardAssignement(shownMainCard)
         switch(mainCardAssignment)
@@ -117,7 +119,7 @@ export function CandidatesReview(props: PropsType) {
                 leftCardAssignment = mainCardAssignment
                 rightCardAssignment = mainCardAssignment
                 break;
-            default:
+            default: {
                 const card = mainCardAssignment
                 const depCardAssignment = cardStateToCardAssignement(shownCandCard)
                 const isLostCard = card.cardType === DataModel.CardType.Found
@@ -130,6 +132,7 @@ export function CandidatesReview(props: PropsType) {
                     leftCardAssignment = depCardAssignment
                 }
                 break;
+            }
         }
 
         return (
@@ -145,14 +148,14 @@ export function CandidatesReview(props: PropsType) {
     }
 
     const renderLowerScreen = () => {
-        var lowerContent
+        let lowerContent
         switch(shownMainCard) {
             case "DoesNotExist":
             case "NotSet":
                 lowerContent = false
                 break
             case "Loading":
-            default:
+            default: {
                 const mainCard = shownMainCard === "Loading" ? null : shownMainCard
                 lowerContent = <Thumbnails.CandidatesThumbnails
                                 referenceCard={mainCard}
@@ -160,6 +163,7 @@ export function CandidatesReview(props: PropsType) {
                                 selectionChanged={(newFullID) => handleSelectionChanged(newFullID)}
                                 searcher={searcher}
                                 cardStorage={cardStorage} />
+            }
         }
         return (
             <div className="lower-screen">

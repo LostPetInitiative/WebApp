@@ -53,8 +53,8 @@ export class CardStorage implements ICardStorage.ICardStorage {
     }
 
     GetPetCard(namespace: string, localID: string): Promise<ICardStorage.GetPetCardReplyType> {
-        var cardURL = this.serviceURL + "/PetCards/" + namespace + "/" + localID;
-        var cardInfoPromise = fetch(cardURL).then(response =>
+        const cardURL = this.serviceURL + "/PetCards/" + namespace + "/" + localID;
+        const cardInfoPromise = fetch(cardURL).then(response =>
             response.json().then(data => ({
                 data: data,
                 status: response.status
@@ -62,7 +62,7 @@ export class CardStorage implements ICardStorage.ICardStorage {
             ));
 
         const photosURL = this.serviceURL + "/PetPhotos/" + namespace + "/" + localID +"?featuresToInclude=CalZhiruiHeadTwinTransformer";
-        var cardPhotosPromise = fetch(photosURL).then(response =>
+        const cardPhotosPromise = fetch(photosURL).then(response =>
             response.json().then(data => ({
                 data: data,
                 status: response.status
@@ -82,8 +82,8 @@ export class CardStorage implements ICardStorage.ICardStorage {
                         srcUrl: this.serviceURL + "/PetPhotos/" + namespace + "/" + localID + "/" + i.imageNum + "?preferableProcessingsStr=CalZhiruiAnnotatedHead"                        
                     }
                 });
-                var downloadedCard: AnimalCard = values[0].data;
-                var card: DataModel.AnimalCard = {
+                const downloadedCard: AnimalCard = values[0].data;
+                const card: DataModel.AnimalCard = {
                     namespace: namespace,
                     id: localID,
                     animal: downloadedCard.animal,

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import './Header.scss';
 
-function Header(props: {} ) {
+function Header() {
     const {t} = useTranslation()
     const kashtankaLocalized = t("kashtanka")
     return (

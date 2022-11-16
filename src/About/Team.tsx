@@ -53,19 +53,19 @@ export function Team() {
 
     const shuffledTeamMembers = React.useMemo(() => {
         const arr = teamMembers.slice()
-        for(var i=0;i<arr.length;i++)
+        for(let i=0;i<arr.length;i++)
             arr[i].sortOrderVal = Math.random()
         arr.sort((a,b) => a.sortOrderVal - b.sortOrderVal) // shuffling
         return arr
-    },[teamMembers])
+    },[])
     
     const [collapsed,setCollapsed] = React.useState(true)
 
-    var teamElem : JSX.Element
+    let teamElem : JSX.Element
     if (collapsed) {
 
         const overflowButtonProps = {
-            onClick: (ev: React.MouseEvent<HTMLButtonElement>) => setCollapsed(v => !v),
+            onClick: () => setCollapsed(v => !v),
           };
         
 
@@ -73,7 +73,7 @@ export function Team() {
             return {
                 personaName: t(`${p.i18nKey}.name`),
                 imageUrl: p.ImageURL,
-                onClick: (ev: React.MouseEvent<HTMLButtonElement>) => setCollapsed(v => !v),
+                onClick: () => setCollapsed(v => !v),
             }
         });
         teamElem = (
@@ -88,7 +88,7 @@ export function Team() {
         const personas = shuffledTeamMembers.map(p => {
             const desc = t(`${p.i18nKey}.desc`)
             return (
-                <Stack styles={{root: {margin: 12}}}>
+                <Stack key={p.i18nKey} styles={{root: {margin: 12}}}>
                     <Persona
                         text={t(`${p.i18nKey}.name`)}
                         imageUrl={p.ImageURL}
@@ -108,7 +108,7 @@ export function Team() {
             <Stack tokens={{ childrenGap: 0, padding: 4}} horizontal wrap>
                     {personas}
             </Stack>
-            <ActionButton iconProps={{iconName:"BackToWindow"}} text={t("collapseTeam")} onClick={ev => {setCollapsed(v => !v) }} />
+            <ActionButton iconProps={{iconName:"BackToWindow"}} text={t("collapseTeam")} onClick={() => {setCollapsed(v => !v) }} />
             </>
         )
     }

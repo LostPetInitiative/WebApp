@@ -9,12 +9,13 @@ type PropsType = {
 }
 
 export function CarouselImgViewer(props: PropsType) {
+    const {onImgIdxChange } = props;
     const [selectedIndex, setSelectedIndex] = React.useState(0)
     const total = props.imgSrcArray.length
 
     React.useEffect(() => {
-        props.onImgIdxChange?.(selectedIndex);
-    },[props.onImgIdxChange, selectedIndex])
+        onImgIdxChange?.(selectedIndex);
+    },[onImgIdxChange, selectedIndex])
 
     const selectIndex = (i: number) => {
         if(total>0)

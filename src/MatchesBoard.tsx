@@ -2,7 +2,7 @@ import * as React from "react";
 import "."
 import "./MatchesBoard.scss"
 
-function MatchBoard(props: {}) {
+export function MatchBoard() {
     React.useEffect(() => {
         document.title = "Каштанка - автоматический поиск потерянных и найденных домашних животных - Доска совпадений"
     })
@@ -13,5 +13,3 @@ function MatchBoard(props: {}) {
 
     
 }
-
-export default MatchBoard;  

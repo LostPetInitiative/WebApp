@@ -11,5 +11,15 @@
     "**/.pnp.*": true
   },
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  "eslint.packageManager": "yarn",
+  //"eslint.format.enable": true,
+  "eslint.debug": true,
+  //"eslint.nodePath": "C:/Program Files/nodejs", // without this ESLint fails to load ((
+  "eslint.workingDirectories": [
+    "./src"
+  ],
+  "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"]
+  //"eslint.validate": ["typescript"]
 }

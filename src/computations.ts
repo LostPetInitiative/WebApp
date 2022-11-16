@@ -20,10 +20,10 @@ export function cosSimilarity(x:number[], y:number[]) {
         throw new Error("vectors of different length");
     }
     const N = x.length;
-    var pairwiseMulSum = 0;
-    var xSqr = 0;
-    var ySqr = 0;
-    for(var i=0;i<N;i++) {
+    let pairwiseMulSum = 0;
+    let xSqr = 0;
+    let ySqr = 0;
+    for(let i=0;i<N;i++) {
         pairwiseMulSum += x[i]*y[i]
         xSqr += x[i]*x[i]
         ySqr += y[i]*y[i]

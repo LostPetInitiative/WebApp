@@ -9,12 +9,12 @@ const mailToElement = (
 );
 
 const pet911ru_link = (
-  <a href="https://pet911.ru" target="_BLANK" rel="external">
+  <a href="https://pet911.ru" target="_BLANK" rel="external noreferrer">
     pet911.ru
   </a>
 );
 const poiskzoo_link = (
-  <a href="https://poiskzoo.ru" target="_BLANK" rel="external">
+  <a href="https://poiskzoo.ru" target="_BLANK" rel="external noreferrer">
     poiskzoo.ru
   </a>
 );
@@ -212,18 +212,20 @@ const englishQnA = (
   </>
 );
 
-function Faq(props: {}) {
+function Faq() {
   const { t:tGen, i18n } = useTranslation("translation");
   const { t } = useTranslation("translation", { keyPrefix: "about" });
 
+  const titleLosStr = tGen("title")
+  const sectionLocStr = t('section')
   React.useEffect(() => {
-    document.title = tGen("title") + ' - '+t('section')
-  },[]);
+    document.title = titleLosStr + ' - '+sectionLocStr
+  },[titleLosStr, sectionLocStr]);
 
   const kashtankaTeamStr = t("kashtankaTeam");
 
   // TODO: can we ensure that the compoent is rerendered upon language change?
-  var QnA: JSX.Element;
+  let QnA: JSX.Element;
   switch (i18n.resolvedLanguage) {
     case "ru":
       QnA = russianQnA;

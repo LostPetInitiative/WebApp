@@ -17,7 +17,7 @@ function getUnitForm(value:number, forms:[string,string,string])
 }
 
 export function getTimeDiffString(timeDiffMs: number) {
-    var timeDiffStr: string;
+    let timeDiffStr: string;
     const oneSec = 1000
     const oneMin = 60 * oneSec
     const oneHour = 60 * oneMin
