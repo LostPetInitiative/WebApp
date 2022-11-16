@@ -69,6 +69,7 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
     const {totalCount:totalCountPet911,countPerDay:perDayPet911} = useNamespaceVitals(solrGatewayURL, "pet911ru")
     const {totalCount:totalCountPoiskZoo,countPerDay:perDayPoiskZoo} = useNamespaceVitals(solrGatewayURL, "poiskzoo")
     const {totalCount:totalCountVkNsk,countPerDay:perDayVkNsk} = useNamespaceVitals(solrGatewayURL, "vk-poterjashkansk")
+    const {totalCount:totalCountVkEkb,countPerDay:perDayVkEkb} = useNamespaceVitals(solrGatewayURL, "vk-club46290079")
 
     const data = React.useMemo(() => {
         const result:Array<Array<string|number>> = []
@@ -115,12 +116,13 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
         if(perDayPet911) addDataSourceToDataTable(perDayPet911,"pet911.ru");
         if(perDayPoiskZoo) addDataSourceToDataTable(perDayPoiskZoo,"Poiskzoo.ru");
         if(perDayVkNsk) addDataSourceToDataTable(perDayVkNsk,"vk.com/poterjashkansk");
+        if(perDayVkEkb) addDataSourceToDataTable(perDayVkEkb,"vk.com/club46290079");
         
         result.push(headerRow)
         result.push(...datesData)
         return result
         }
-    ,[perDayPet911, perDayPoiskZoo, perDayVkNsk])
+    ,[perDayPet911, perDayPoiskZoo, perDayVkNsk, perDayVkEkb])
 
     const totalCards = (totalCountPet911??0) + (totalCountPoiskZoo??0) + (totalCountVkNsk??0)
 
@@ -148,6 +150,7 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
             CountTile({partnerLink:"https://pet911.ru", iconURL: urls.Pet911IconURL, count:totalCountPet911}),
             CountTile({partnerLink:"https://poiskzoo.ru", iconURL: urls.PoiskzooIconURL, count:totalCountPoiskZoo}),
             CountTile({partnerLink:"https://vk.com/poterjashkansk", iconURL: urls.VkNSKIconURL, count:totalCountVkNsk}),
+            CountTile({partnerLink:"https://vk.com/club46290079", iconURL: urls.VkIconURL, count:totalCountVkEkb}),
         ]
 
         chartArea = (

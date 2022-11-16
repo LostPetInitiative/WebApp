@@ -58,7 +58,7 @@ function AnimalCard(props: { card: DataModel.AnimalCard, imageIdxChanged?: (num:
         let title = "";
 
         if(cardSource.startsWith("vk-")) {
-            url=urls.VkNSKIconURL
+            url=urls.VkIconURL;
             title="vk group"
         }
         switch (cardSource) {
