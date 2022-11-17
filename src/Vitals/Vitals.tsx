@@ -3,7 +3,7 @@ import * as React from "react";
 import Header from "../Header";
 import { Chart } from "react-google-charts";
 import { useTranslation } from "react-i18next";
-import { Spinner, SpinnerSize } from "@fluentui/react";
+import { Persona, PersonaSize, Spinner, SpinnerSize } from "@fluentui/react";
 import * as urls from '../urls'
 
 import "./Vitals.scss"
@@ -43,18 +43,28 @@ function useNamespaceVitals(solrGatewayURL:string, namespace: string) {
     }
 }
 
-function CountTile(props:{iconURL:string, partnerLink:string, count:number}) {
-    const {partnerLink,iconURL, count } = props;
+function CountTile(props:{iconURL:string, partnerLink:string, count:number, name: string}) {
+    const {partnerLink,iconURL, count, name } = props;
     if (!count) return null;
     const countStr = count.toLocaleString("en").replace(','," ")
-    return (
-        <a href={partnerLink} target="_blank" rel="external noopener noreferrer">
-        <div key={partnerLink} className="countTileContainer">
-            <img src={iconURL} alt={partnerLink} title={partnerLink} width="25px" height="25px"/>
-            <p >{countStr}</p>
-        </div>
+    return <a href={partnerLink} target="_blank" rel="external noopener noreferrer">
+        <Persona
+            text={countStr}
+            secondaryText={name}
+            imageUrl={iconURL}
+            key={partnerLink}
+            title={partnerLink}
+            size={PersonaSize.size40}
+            />
         </a>
-    )
+    // return (
+    //     <a href={partnerLink} target="_blank" rel="external noopener noreferrer">
+    //     <div key={partnerLink} className="countTileContainer">
+    //         <img src={iconURL} alt={partnerLink} title={partnerLink} width="25px" height="25px"/>
+    //         <p >{countStr}</p>
+    //     </div>
+    //     </a>
+    // )
 }
   
 export function VitalsPage(props:{solrGatewayURL:string}) {
@@ -154,18 +164,18 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
         const totalCardsStr = totalCards.toLocaleString('en').replace(','," ")
 
         const perSourceCountTiles = [
-            CountTile({partnerLink:"https://pet911.ru", iconURL: urls.Pet911IconURL, count:totalCountPet911}),
-            CountTile({partnerLink:"https://poiskzoo.ru", iconURL: urls.PoiskzooIconURL, count:totalCountPoiskZoo}),
-            CountTile({partnerLink:"https://vk.com/poterjashkansk", iconURL: urls.VkNSKIconURL, count:totalCountVkNsk}),
-            CountTile({partnerLink:"https://vk.com/club46290079", iconURL: urls.VkIconURL, count:totalCountVkEkb}),
-            CountTile({partnerLink:"https://vk.com/poteryashki_nn", iconURL: urls.VkIconURL, count:totalCountVkNn}),
-        ]
+            CountTile({name: "pet911.ru", partnerLink:"https://pet911.ru", iconURL: urls.Pet911IconURL, count:totalCountPet911}),
+            CountTile({name: "poiskzoo.ru", partnerLink:"https://poiskzoo.ru", iconURL: urls.PoiskzooIconURL, count:totalCountPoiskZoo}),
+            CountTile({name: "poterjashkansk", partnerLink:"https://vk.com/poterjashkansk", iconURL: urls.VkNSKIconURL, count:totalCountVkNsk}),
+            CountTile({name: "club46290079", partnerLink:"https://vk.com/club46290079", iconURL: urls.VkIconURL, count:totalCountVkEkb}),
+            CountTile({name: "poteryashki_nn", partnerLink:"https://vk.com/poteryashki_nn", iconURL: urls.VkIconURL, count:totalCountVkNn}),
+        ] 
 
         chartArea = (
             <>
             <div style={{display:"flex", flexDirection:"row", alignContent:"center"}}>
                 <p>{totalCardsPrefixLocStr}<strong>&nbsp;{totalCardsStr}&nbsp;</strong>{totalCardsSuffixLocStr}.</p>
-                &nbsp;<p>{inParticularLocStr}</p>{perSourceCountTiles}
+                &nbsp;<p style={{marginRight:"4px"}}>{inParticularLocStr}</p>{perSourceCountTiles}
             </div>
             <Chart
                 chartType="ColumnChart"
