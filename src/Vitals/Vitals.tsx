@@ -70,6 +70,7 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
     const {totalCount:totalCountPoiskZoo,countPerDay:perDayPoiskZoo} = useNamespaceVitals(solrGatewayURL, "poiskzoo")
     const {totalCount:totalCountVkNsk,countPerDay:perDayVkNsk} = useNamespaceVitals(solrGatewayURL, "vk-poterjashkansk")
     const {totalCount:totalCountVkEkb,countPerDay:perDayVkEkb} = useNamespaceVitals(solrGatewayURL, "vk-club46290079")
+    const {totalCount:totalCountVkNn,countPerDay:perDayVkNn} = useNamespaceVitals(solrGatewayURL, "vk-poteryashkinn")
 
     const data = React.useMemo(() => {
         const result:Array<Array<string|number>> = []
@@ -117,14 +118,20 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
         if(perDayPoiskZoo) addDataSourceToDataTable(perDayPoiskZoo,"Poiskzoo.ru");
         if(perDayVkNsk) addDataSourceToDataTable(perDayVkNsk,"vk.com/poterjashkansk");
         if(perDayVkEkb) addDataSourceToDataTable(perDayVkEkb,"vk.com/club46290079");
+        if(perDayVkNn) addDataSourceToDataTable(perDayVkNn,"vk.com/poteryashki_nn");
         
         result.push(headerRow)
         result.push(...datesData)
         return result
         }
-    ,[perDayPet911, perDayPoiskZoo, perDayVkNsk, perDayVkEkb])
+    ,[perDayPet911, perDayPoiskZoo, perDayVkNsk, perDayVkEkb, perDayVkNn])
 
-    const totalCards = (totalCountPet911??0) + (totalCountPoiskZoo??0) + (totalCountVkNsk??0)
+    const totalCards =
+        (totalCountPet911??0) +
+        (totalCountPoiskZoo??0) +
+        (totalCountVkNsk??0) +
+        (totalCountVkEkb??0) +
+        (totalCountVkNn??0)
 
     const options = {
         title: titleLocStr,
@@ -151,6 +158,7 @@ export function VitalsPage(props:{solrGatewayURL:string}) {
             CountTile({partnerLink:"https://poiskzoo.ru", iconURL: urls.PoiskzooIconURL, count:totalCountPoiskZoo}),
             CountTile({partnerLink:"https://vk.com/poterjashkansk", iconURL: urls.VkNSKIconURL, count:totalCountVkNsk}),
             CountTile({partnerLink:"https://vk.com/club46290079", iconURL: urls.VkIconURL, count:totalCountVkEkb}),
+            CountTile({partnerLink:"https://vk.com/poteryashki_nn", iconURL: urls.VkIconURL, count:totalCountVkNn}),
         ]
 
         chartArea = (
