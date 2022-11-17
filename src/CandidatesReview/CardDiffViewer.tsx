@@ -43,6 +43,8 @@ export function CardDiffViewer(props: { card1: DataModel.AnimalCard, card2: Data
         const secondCardFeatures = sndCardPhoto.featureVectors[featuresIdent];
         if(!firstCardFeatures || !secondCardFeatures)
             return null;
+        if(firstCardFeatures.length != secondCardFeatures.length)
+            return null;
 
         const cosSim = Comp.cosSimilarity(firstCardFeatures, secondCardFeatures);
         
