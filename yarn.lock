@@ -3061,7 +3061,7 @@ __metadata:
     react-google-charts: ^4.0.0
     react-i18next: ^12.0.0
     react-router-dom: 5.3.4
-    sass: ^1.54.8
+    sass: ^1.56.2
     sass-loader: ^13.2.0
     style-loader: ^3.3.1
     ts-loader: ^9.4.1
@@ -8045,16 +8045,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.54.8":
-  version: 1.54.8
-  resolution: "sass@npm:1.54.8"
+"sass@npm:^1.56.2":
+  version: 1.56.2
+  resolution: "sass@npm:1.56.2"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 72893b2dc6284a6194fc560a578da57ab0082130ee558a96bcb9893cc7b517b836dac6e17b3a52b040975e70b4cdefb1268907df955a706b5bf70e3860afcfba
+  checksum: 7b1f524d04bc42df3bac6dc5201ff7475635b7df9a1390430ed5bd58b6a73ea1ae58b83ccea8da293cb77b85b4c848faf5f2779ca4b91b9303948c251d0ddca4
   languageName: node
   linkType: hard
 
