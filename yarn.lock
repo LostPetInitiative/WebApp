@@ -1727,16 +1727,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/dom-utilities@npm:^2.2.3":
-  version: 2.2.3
-  resolution: "@fluentui/dom-utilities@npm:2.2.3"
-  dependencies:
-    "@fluentui/set-version": ^8.2.3
-    tslib: ^2.1.0
-  checksum: 02c1772d44e6f50978823af490dd90dd5d80a15817369ab6cb73796e00dd6a4b7cf9a076c19073d70adf038d779630e6153bff05505a88d1ff87c7b3d989c949
-  languageName: node
-  linkType: hard
-
 "@fluentui/dom-utilities@npm:^2.2.4":
   version: 2.2.4
   resolution: "@fluentui/dom-utilities@npm:2.2.4"
@@ -1747,15 +1737,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/font-icons-mdl2@npm:^8.5.5":
-  version: 8.5.5
-  resolution: "@fluentui/font-icons-mdl2@npm:8.5.5"
+"@fluentui/dom-utilities@npm:^2.2.5":
+  version: 2.2.5
+  resolution: "@fluentui/dom-utilities@npm:2.2.5"
   dependencies:
-    "@fluentui/set-version": ^8.2.3
-    "@fluentui/style-utilities": ^8.8.4
-    "@fluentui/utilities": ^8.13.4
+    "@fluentui/set-version": ^8.2.5
     tslib: ^2.1.0
-  checksum: f77731f0f2b84bcfab685851dc4e6a7625e2ac8e5c6f08e97aaffe8cc72b1eab6d0f76ec9d430bdc17cf4c8ecdd9df4dde2ca9f61225402b8929d3d945770cb2
+  checksum: 09277daca0aaa0cecfbac1c652c8c17addf87a63ad348295bc485b1d1705d49b26be7a9184a839a070de4f11a68b2834a7e62126db73f5c3138f9abf663ae1ef
   languageName: node
   linkType: hard
 
@@ -1768,6 +1756,18 @@ __metadata:
     "@fluentui/utilities": ^8.13.5
     tslib: ^2.1.0
   checksum: 69221cefd5569f0f2cba1e15e642dc529884ee93d866a562cb4de291c1682dfbb79bd93033ac88dd31c3b6032a573ccffc1bbe0fa7ed5225445583c22040d940
+  languageName: node
+  linkType: hard
+
+"@fluentui/font-icons-mdl2@npm:^8.5.8":
+  version: 8.5.8
+  resolution: "@fluentui/font-icons-mdl2@npm:8.5.8"
+  dependencies:
+    "@fluentui/set-version": ^8.2.5
+    "@fluentui/style-utilities": ^8.9.1
+    "@fluentui/utilities": ^8.13.6
+    tslib: ^2.1.0
+  checksum: fdfba426261234c40bb4a944fb9838622b317a6dc555cd580b4d5f6f3d45ec2c47f64765ee3df05ec1e874b0f84d0c234c3f79164cb7c93cf11d7da703d0060f
   languageName: node
   linkType: hard
 
@@ -1796,16 +1796,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/merge-styles@npm:^8.5.4":
-  version: 8.5.4
-  resolution: "@fluentui/merge-styles@npm:8.5.4"
-  dependencies:
-    "@fluentui/set-version": ^8.2.3
-    tslib: ^2.1.0
-  checksum: c795af75703e935e4331536d688a5fe090d5e71f7a110a03eb2873afcd8bfd6c2b4419ecfbb6bbda8954078aa5a30d2728b2bee4e571a8b20a172731561f042c
-  languageName: node
-  linkType: hard
-
 "@fluentui/merge-styles@npm:^8.5.5":
   version: 8.5.5
   resolution: "@fluentui/merge-styles@npm:8.5.5"
@@ -1813,6 +1803,16 @@ __metadata:
     "@fluentui/set-version": ^8.2.4
     tslib: ^2.1.0
   checksum: c46ee038c8aada0516821820b38832baa377615dccc360af3253cf88dad5c0abdcdcba708a95aaca7a46b51018d18be4f91128518ecc9fdf6a185b584a691fef
+  languageName: node
+  linkType: hard
+
+"@fluentui/merge-styles@npm:^8.5.6":
+  version: 8.5.6
+  resolution: "@fluentui/merge-styles@npm:8.5.6"
+  dependencies:
+    "@fluentui/set-version": ^8.2.5
+    tslib: ^2.1.0
+  checksum: 8f472353e430cd64ff4a449d155170bd303fdf0f9dfce021b5c43a7dccb35cd070bbb9e946c18c6e939eb93cfbaf5dab0d5988f9efcde19dc841a8aadb209377
   languageName: node
   linkType: hard
 
@@ -1900,15 +1900,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/set-version@npm:^8.2.3":
-  version: 8.2.3
-  resolution: "@fluentui/set-version@npm:8.2.3"
-  dependencies:
-    tslib: ^2.1.0
-  checksum: 3b841fff7be47d469ead75e145bd051c32e8ca94ee108cecb75b43f8a51e8309dd69b693b51cd7f36f28ca52dd92d2c2e3b42acbcc1c8efb80aa82db4190a547
-  languageName: node
-  linkType: hard
-
 "@fluentui/set-version@npm:^8.2.4":
   version: 8.2.4
   resolution: "@fluentui/set-version@npm:8.2.4"
@@ -1918,17 +1909,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/style-utilities@npm:^8.8.4":
-  version: 8.8.4
-  resolution: "@fluentui/style-utilities@npm:8.8.4"
+"@fluentui/set-version@npm:^8.2.5":
+  version: 8.2.5
+  resolution: "@fluentui/set-version@npm:8.2.5"
   dependencies:
-    "@fluentui/merge-styles": ^8.5.4
-    "@fluentui/set-version": ^8.2.3
-    "@fluentui/theme": ^2.6.20
-    "@fluentui/utilities": ^8.13.4
-    "@microsoft/load-themed-styles": ^1.10.26
     tslib: ^2.1.0
-  checksum: eac70bdd6b572f996687d676c4fce51e149c63344b033c196a9aee87589d7a73d5fd7b0a35478a7a5e4cbc90630f522ed2e55b5115f7e1eab8ed9cda4d1b4ac6
+  checksum: be190d34e0bf5b1f7947f9f376483ffb97abc79799ffe8196288abed76c678c31a349d9e7a5ed3eaec892bf80723e76ae309142ee0d7659e66a49048fe2341c7
   languageName: node
   linkType: hard
 
@@ -1946,18 +1932,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/theme@npm:^2.6.20":
-  version: 2.6.20
-  resolution: "@fluentui/theme@npm:2.6.20"
+"@fluentui/style-utilities@npm:^8.9.1":
+  version: 8.9.1
+  resolution: "@fluentui/style-utilities@npm:8.9.1"
   dependencies:
-    "@fluentui/merge-styles": ^8.5.4
-    "@fluentui/set-version": ^8.2.3
-    "@fluentui/utilities": ^8.13.4
+    "@fluentui/merge-styles": ^8.5.6
+    "@fluentui/set-version": ^8.2.5
+    "@fluentui/theme": ^2.6.22
+    "@fluentui/utilities": ^8.13.6
+    "@microsoft/load-themed-styles": ^1.10.26
     tslib: ^2.1.0
-  peerDependencies:
-    "@types/react": ">=16.8.0 <19.0.0"
-    react: ">=16.8.0 <19.0.0"
-  checksum: a59df8b103e0c9ffee670024b8165001eb7fce8bce34709024059be7a07a170c1e620d8e85f0abc888fb636983329dfcee327b9117e6716747d4003100f2aee5
+  checksum: db09f63393cb6549e8950da3b452809b69c6092876360c678c666cfb9f10fb907abaa1cc878d38afe9b2a2d39544472d5187974a24a3d1979327bb1b9afd3928
   languageName: node
   linkType: hard
 
@@ -1976,18 +1961,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/utilities@npm:^8.13.4":
-  version: 8.13.4
-  resolution: "@fluentui/utilities@npm:8.13.4"
+"@fluentui/theme@npm:^2.6.22":
+  version: 2.6.22
+  resolution: "@fluentui/theme@npm:2.6.22"
   dependencies:
-    "@fluentui/dom-utilities": ^2.2.3
-    "@fluentui/merge-styles": ^8.5.4
-    "@fluentui/set-version": ^8.2.3
+    "@fluentui/merge-styles": ^8.5.6
+    "@fluentui/set-version": ^8.2.5
+    "@fluentui/utilities": ^8.13.6
     tslib: ^2.1.0
   peerDependencies:
     "@types/react": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
-  checksum: 840f86ba67dd72d6a98c37950d19793eb5ee9d8bc660dbf1616a9be13ec7d0c54415555dc6f781500bc421f1287e1ef1fa4ec87a4bcc8d6d335fd76af8598193
+  checksum: 5095a3cd69fecf3abdc4d8f7ce050d76da8756f357072332ac4c94ad9067d55311a28a383e0300fe23182379b254d2e5d3d7ea4de4ea6dac285e34ca5b8668bd
   languageName: node
   linkType: hard
 
@@ -2003,6 +1988,21 @@ __metadata:
     "@types/react": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
   checksum: 836ee10d2592b798992f9e2322ad9ad7809df2c4d3783bb4f5313c7a40109e650b59581a5b35d3cd1d9ca1a2a7c09ac93f0cdb4829f8ea702fcb175934ff68c7
+  languageName: node
+  linkType: hard
+
+"@fluentui/utilities@npm:^8.13.6":
+  version: 8.13.6
+  resolution: "@fluentui/utilities@npm:8.13.6"
+  dependencies:
+    "@fluentui/dom-utilities": ^2.2.5
+    "@fluentui/merge-styles": ^8.5.6
+    "@fluentui/set-version": ^8.2.5
+    tslib: ^2.1.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+  checksum: ec7f05070e791554221431a8cfcba58e63225b198968a372a7ff58994ec9b385855cf7a237419527b26657f4d9d800754e6da184d3d6d9aba52be7fd5b274e81
   languageName: node
   linkType: hard
 
@@ -3221,7 +3221,7 @@ __metadata:
     "@babel/preset-env": ^7.18.10
     "@babel/preset-react": ^7.18.6
     "@babel/preset-typescript": ^7.18.6
-    "@fluentui/font-icons-mdl2": ^8.5.5
+    "@fluentui/font-icons-mdl2": ^8.5.8
     "@fluentui/react": ^8.104.5
     "@types/jest": ^29.2.5
     "@types/react": ^18.0.25
